@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "sync:db": "ts-node ./be-src/sync.ts",
+    "sync:db": "ts-node ./server/sync.ts",
     "dev:fe": "parcel serve ./public/index.html",
     "dev:be": "nodemon --watch './server/**/*' -e ts --exec 'ts-node ./server/index.ts'",
     "build:be": "tsc",
-    "build:fe": "parcel build ./fe-dist/index.html",
-    "build": "npm run build:fe && npm run build:be",
-    "start": "node ./server/index.js"
+    "build:fe": "parcel build ./public/index.html --dist-dir ./dist",
+    "build": "yarn run build:fe && yarn run build:be",
+    "start": "node ./server-dist/index.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.16",
