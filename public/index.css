@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.label {
+  font-size: 18px;
+  margin: 10px 0 5px;
+}
+
+.input {
+  height: 40px;
+}
+
+.foto-input {
+  margin: 20px 0;
+}
+
+.foto-input,
+.save {
+  border-style: none;
+  height: 30px;
+  background-color: #ff5733;
+}
