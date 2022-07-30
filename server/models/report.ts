@@ -6,7 +6,7 @@ Report.init(
   {
     // Model attributes are defined here
     fullname: DataTypes.STRING,
-    phone: DataTypes.INTEGER,
+    phone_number: DataTypes.INTEGER,
     report_data: DataTypes.STRING,
   },
   { sequelize, modelName: "report" }

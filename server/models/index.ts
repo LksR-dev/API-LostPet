@@ -3,11 +3,11 @@ import { Auth } from "./auth";
 import { Pet } from "./pet";
 import { Report } from "./report";
 
-User.hasMany(Pet);
-Pet.belongsTo(User);
-
 User.hasOne(Auth);
 Auth.belongsTo(User);
+
+User.hasMany(Pet);
+Pet.belongsTo(User);
 
 User.hasMany(Report);
 Report.belongsTo(User);

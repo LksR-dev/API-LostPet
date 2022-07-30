@@ -17,14 +17,14 @@ export async function authUser(
   } else if (!password) {
     throw `I need a user Password`;
   } else if (!userId) {
-    throw `I need a user ID`;
+    throw `I need userId`;
   } else {
     const [auth, authCreated] = await Auth.findOrCreate({
-      where: { user_id: userId },
+      where: { email: email },
       defaults: {
         email,
         password: getSHA256ofString(password),
-        user_id: userId,
+        userId,
       },
     });
     return auth;

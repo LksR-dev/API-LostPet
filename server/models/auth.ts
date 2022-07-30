@@ -7,7 +7,6 @@ Auth.init(
     // Model attributes are defined here
     password: DataTypes.STRING,
     email: DataTypes.STRING,
-    user_id: DataTypes.INTEGER,
   },
   { sequelize, modelName: "auth" }
 );
