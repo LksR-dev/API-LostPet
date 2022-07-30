@@ -5,12 +5,22 @@ export class Pet extends Model {}
 Pet.init(
   {
     // Model attributes are defined here
-    name: DataTypes.STRING,
-    bio: DataTypes.STRING,
-    img: DataTypes.STRING,
-    founded: DataTypes.BOOLEAN,
-    last_lng: DataTypes.FLOAT,
-    last_lat: DataTypes.FLOAT,
+    name: {
+      type: DataTypes.STRING,
+    },
+    img: {
+      type: DataTypes.STRING,
+    },
+    founded: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    last_lng: {
+      type: DataTypes.FLOAT,
+    },
+    last_lat: {
+      type: DataTypes.FLOAT,
+    },
   },
   { sequelize, modelName: "pet" }
 );

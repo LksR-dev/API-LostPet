@@ -5,9 +5,15 @@ export class Report extends Model {}
 Report.init(
   {
     // Model attributes are defined here
-    fullname: DataTypes.STRING,
-    phone_number: DataTypes.INTEGER,
-    report_data: DataTypes.STRING,
+    fullname: {
+      type: DataTypes.STRING,
+    },
+    phone_number: {
+      type: DataTypes.INTEGER,
+    },
+    report_data: {
+      type: DataTypes.STRING,
+    },
   },
   { sequelize, modelName: "report" }
 );

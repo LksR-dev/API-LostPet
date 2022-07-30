@@ -22,6 +22,4 @@ async function userData(userId): Promise<User> {
   return user;
 }
 
-async function reportPet(petname, img, lat, lng): Promise<void> {}
-
-export { createUser, userData, reportPet };
+export { createUser, userData };

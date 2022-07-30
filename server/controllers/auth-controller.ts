@@ -5,7 +5,7 @@ import * as jwt from "jsonwebtoken";
 function getSHA256ofString(text: string) {
   return crypto.createHash("sha256").update(JSON.stringify(text)).digest("hex");
 }
-const SECRET = "asdasdasd12341234";
+const SECRET = process.env.JWT_SECRET;
 
 export async function authUser(
   email: string,
@@ -46,9 +46,12 @@ export async function getToken(
         password: getSHA256ofString(password),
       },
     });
+
     if (auth) {
-      const token: string = jwt.sign({ id: auth.get("user_id") }, SECRET);
+      const token: string = jwt.sign({ id: auth.get("userId") }, SECRET);
       return token;
+    } else {
+      console.error({ message: `Email or password incorrect` });
     }
   }
 }

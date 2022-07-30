@@ -5,8 +5,12 @@ export class Auth extends Model {}
 Auth.init(
   {
     // Model attributes are defined here
-    password: DataTypes.STRING,
-    email: DataTypes.STRING,
+    password: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
   },
   { sequelize, modelName: "auth" }
 );
