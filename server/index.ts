@@ -8,10 +8,11 @@ import { createUser, userData } from "./controllers/user-controller";
 import { registerPet } from "./controllers/pet-controller";
 import { authUser, getToken } from "./controllers/auth-controller";
 import { uploadCloudinaryImg } from "./controllers/cloudinary-controller";
-import { registerPetAlgolia } from "./controllers/algolia-controller";
+import {
+  registerPetAlgolia,
+  searchPets,
+} from "./controllers/algolia-controller";
 import { authMiddleware } from "./controllers/middleware";
-import { Auth, Pet, Report, User } from "./models";
-import { indexPet } from "./lib/algolia";
 
 //Init server and server cfg
 const port = process.env.PORT || 3001;
@@ -99,6 +100,17 @@ app.post(
     }
   }
 );
+
+app.get(`/pets-cerca-de`, async (req, res) => {
+  const { lat, lng } = req.query;
+
+  if (lat && lng) {
+    const hits = await searchPets(lat, lng);
+    res.json(hits);
+  } else {
+    res.status(400).json({ message: `Missing data in the body` });
+  }
+});
 
 const route = path.resolve(__dirname, "../dist");
 app.use(express.static(route));

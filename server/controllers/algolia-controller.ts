@@ -43,4 +43,16 @@ async function registerPetAlgolia(
   }
 }
 
-export { registerPetAlgolia };
+async function searchPets(lat: string, lng: string): Promise<object> {
+  try {
+    const { hits } = await indexPet.search("", {
+      aroundLatLng: [lat, lng].join(","),
+      aroundRadius: 1000,
+    });
+    return hits;
+  } catch {
+    throw `Problems with search pets`;
+  }
+}
+
+export { registerPetAlgolia, searchPets };
