@@ -1,24 +1,54 @@
-import { Pet } from "../models";
+import { Pet } from '../models';
 
 async function registerPet(
-  petname: string,
-  img: string,
-  lat: string,
-  lng: string,
-  userId: number
+	petname: string,
+	img: string,
+	lat: string,
+	lng: string,
+	userId: number,
 ): Promise<Pet> {
-  if (petname && img && lat && lng && userId) {
-    const pet: Pet = await Pet.create({
-      name: petname,
-      img,
-      last_lat: lat,
-      last_lng: lng,
-      userId,
-    });
-    return pet;
-  } else {
-    throw `Error to create or find a pet`;
-  }
+	if (petname && img && lat && lng && userId) {
+		const pet: Pet = await Pet.create({
+			name: petname,
+			img,
+			last_lat: lat,
+			last_lng: lng,
+			userId,
+		});
+		return pet;
+	} else {
+		throw `Error to create or find a pet`;
+	}
 }
 
-export { registerPet };
+async function updatePet(
+	petId: number,
+	userId: number,
+	lat: number,
+	lng: number,
+	petName: string,
+	img: string,
+	founded: boolean,
+): Promise<any> {
+	if (!founded) {
+		const pet = await Pet.update(
+			{ last_lat: lat, last_lng: lng, name: petName, img },
+			{
+				where: { id: petId, userId: userId },
+			},
+		);
+		return pet;
+	}
+
+	if (founded) {
+		const pet = await Pet.update(
+			{ founded },
+			{
+				where: { id: petId, userId: userId },
+			},
+		);
+		return `The pet state has been updated correctly`;
+	}
+}
+
+export { registerPet, updatePet };
