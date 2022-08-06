@@ -62,4 +62,14 @@ async function updatePetAlgolia(
 	const pet = indexPet.partialUpdateObject(indexItemPet);
 	return pet;
 }
-export { registerPetAlgolia, searchPets, updatePetAlgolia };
+
+async function deletePetAlgolia(petId: any) {
+	try {
+		const deletePet = await indexPet.deleteObject(petId);
+		return `Pet has been deleted, petId in algolia: ${deletePet}`;
+	} catch {
+		throw `Error at delete pet`;
+	}
+}
+
+export { registerPetAlgolia, searchPets, updatePetAlgolia, deletePetAlgolia };

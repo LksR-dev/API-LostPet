@@ -4,11 +4,16 @@ import * as path from 'path';
 import * as cors from 'cors';
 
 //Controllers
-import { createUser, userData, getPets } from './controllers/user-controller';
-import { registerPet, updatePet } from './controllers/pet-controller';
+import { createUser, getPets } from './controllers/user-controller';
+import { registerPet, updatePet, deletePet } from './controllers/pet-controller';
 import { authUser, getToken } from './controllers/auth-controller';
 import { uploadCloudinaryImg } from './controllers/cloudinary-controller';
-import { registerPetAlgolia, searchPets, updatePetAlgolia } from './controllers/algolia-controller';
+import {
+	registerPetAlgolia,
+	searchPets,
+	updatePetAlgolia,
+	deletePetAlgolia,
+} from './controllers/algolia-controller';
 import { authMiddleware } from './controllers/middleware';
 import { Pet } from './models';
 
@@ -51,12 +56,15 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 	}
 });
 
-app.get('/me', authMiddleware, async (req, res): Promise<void> => {
-	try {
-		const user = await userData(req._user.id);
-		res.json(user);
-	} catch {
-		res.status(400).json({ message: `I need the user ID from the req authmiddleware` });
+//Find pets around to lat & lng
+app.get(`/pets-around`, async (req, res) => {
+	const { lat, lng } = req.query;
+
+	if (lat && lng) {
+		const hits = await searchPets(lat, lng);
+		res.json(hits);
+	} else {
+		res.status(400).json({ message: `Missing data in the body` });
 	}
 });
 
@@ -104,13 +112,19 @@ app.put(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	}
 });
 
-app.get(`/pets-around`, async (req, res) => {
-	const { lat, lng } = req.query;
+app.delete(`/me/pet/:id`, authMiddleware, async (req, res) => {
+	const petId = req.params.id;
+	const userId = req._user.id;
 
-	if (lat && lng) {
-		const hits = await searchPets(lat, lng);
-		res.json(hits);
-	} else {
+	try {
+		const petDeleted = await deletePet(petId, userId);
+		const petDeletedAlgolia = await deletePetAlgolia(petId);
+
+		res.json({
+			message: `The pet has been deleted correctly: ${petDeleted}`,
+			messageAlgolia: `${petDeletedAlgolia}`,
+		});
+	} catch {
 		res.status(400).json({ message: `Missing data in the body` });
 	}
 });

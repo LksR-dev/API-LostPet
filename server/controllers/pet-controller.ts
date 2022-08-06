@@ -51,4 +51,13 @@ async function updatePet(
 	}
 }
 
-export { registerPet, updatePet };
+async function deletePet(petId: number, userId: number): Promise<number> {
+	if (petId && userId) {
+		const pet: number = await Pet.destroy({ where: { id: petId, userId } });
+		return pet;
+	} else {
+		throw `petId or userId incorrect`;
+	}
+}
+
+export { registerPet, updatePet, deletePet };
