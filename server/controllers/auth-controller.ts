@@ -7,7 +7,7 @@ function getSHA256ofString(text: string) {
 }
 const SECRET = process.env.JWT_SECRET;
 
-export async function authUser(email: string, password: string, userId: number): Promise<Auth> {
+async function authUser(email: string, password: string, userId: number): Promise<Auth> {
 	if (!email) {
 		throw `I need a user Email`;
 	} else if (!password) {
@@ -27,7 +27,7 @@ export async function authUser(email: string, password: string, userId: number):
 	}
 }
 
-export async function getToken(email: string, password: string): Promise<string> {
+async function getToken(email: string, password: string): Promise<string> {
 	if (!email) {
 		throw `I need a user Email`;
 	} else if (!password) {
@@ -48,3 +48,15 @@ export async function getToken(email: string, password: string): Promise<string>
 		}
 	}
 }
+
+async function updateUserPassword(userId: number, password: string) {
+	try {
+		const passHash = getSHA256ofString(password);
+		await Auth.update({ passHash }, { where: { userId: userId } });
+		return `User password has been updated`;
+	} catch {
+		throw `Error to update user password`;
+	}
+}
+
+export { authUser, getToken, updateUserPassword };

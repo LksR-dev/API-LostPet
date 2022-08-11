@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as cors from 'cors';
 
 //Controllers
-import { createUser, getPets } from './controllers/user-controller';
+import { createUser, getPets, updateUser } from './controllers/user-controller';
 import { registerPet, updatePet, deletePet } from './controllers/pet-controller';
 import { authUser, getToken } from './controllers/auth-controller';
 import { uploadCloudinaryImg } from './controllers/cloudinary-controller';
@@ -15,13 +15,19 @@ import {
 	deletePetAlgolia,
 } from './controllers/algolia-controller';
 import { authMiddleware } from './controllers/middleware';
-import { Pet } from './models';
+import { Auth, Pet, User } from './models';
 
 //Init server and server cfg
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use(
+	express.json({
+		limit: '100mb',
+	}),
+);
 
 app.get('/env', (req, res) => {
 	res.json({
@@ -34,9 +40,9 @@ app.post(`/auth`, async (req, res): Promise<void> => {
 	const { fullname, email, password } = req.body;
 
 	try {
-		const userData = await createUser(fullname, email);
+		const userData: User = await createUser(fullname, email);
 		const userId: number = userData.get('id') as any;
-		const authCreated = await authUser(email, password, userId);
+		const authCreated: Auth = await authUser(email, password, userId);
 
 		res.json(authCreated);
 	} catch (err) {
@@ -53,6 +59,20 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 		res.json(token);
 	} catch {
 		res.status(400).json({ error: 'Missing data in the body' });
+	}
+});
+
+//Update user
+app.put(`/me`, authMiddleware, async (req, res): Promise<void> => {
+	const { fullname, email, password } = req.body;
+	const userId = req._user.id;
+
+	if ((fullname && email) || password) {
+		const updatedUser = await updateUser(fullname, email, userId);
+
+		return updatedUser;
+	} else {
+		res.status(400).json({ message: `Missing data in the body` });
 	}
 });
 

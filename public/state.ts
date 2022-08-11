@@ -1,71 +1,85 @@
-const API_BASE_URL = "localhost:3000";
+const API_BASE_URL = 'http://localhost:3000';
 
 export const state = {
-  data: {
-    fullName: null,
-    email: null,
-    password: null,
-    bio: null,
-    URI: null,
-  },
-  listeners: [],
+	data: {
+		user: {},
+		pets: [{}],
+	},
+	listeners: [],
 
-  getState() {
-    return this.data;
-  },
+	getState(): void {
+		return this.data;
+	},
 
-  setName(fullName: string) {
-    const cs = this.getState();
-    cs.fullName = fullName;
-    this.setState(cs);
-  },
-  setEmail(email: string) {
-    const cs = this.getState();
-    cs.email = email;
-    this.setState(cs);
-  },
-  setPassword(password: string) {
-    const cs = this.getState();
-    cs.password = password;
-    this.setState(cs);
-  },
-  setDescription(bio: string) {
-    const cs = this.getState();
-    cs.bio = bio;
-    this.setState(cs);
-  },
-  setURI(URI: string) {
-    const cs = this.getState();
-    cs.URI = URI;
-    this.setState(cs);
-  },
+	setUserEmailName(fullame, email): void {
+		const cs = this.getState();
+		cs.user.fullName = fullame;
+		cs.user.email = email;
+		this.setState(cs);
+	},
 
-  async createUser() {
-    const cs = this.getState();
-    fetch(`${API_BASE_URL}/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: cs.fullName,
-        bio: cs.bio,
-        email: cs.email,
-        image: cs.URI,
-        password: cs.password,
-      }),
-    });
-  },
+	setToken(token: string) {
+		const cs = this.getState().user;
+		cs.token = token;
+		console.log(cs);
 
-  setState(newState) {
-    this.data = newState;
-    console.log(this.data.URI);
+		this.setState(cs);
+	},
 
-    for (const cb of this.listeners) {
-      cb();
-    }
-  },
-  suscribe(callback: (any) => any) {
-    this.listeners.push(callback);
-  },
+	setURI(URI: string): void {
+		const cs = this.getState();
+		cs.URI = URI;
+		this.setState(cs);
+	},
+
+	async createUser(password: string, fullname: string, email: string): Promise<object> {
+		try {
+			this.setUserEmailName(fullname, email);
+			const signup: Response = await fetch(`${API_BASE_URL}/auth`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					fullname,
+					email,
+					password,
+				}),
+			});
+			const res: object = signup.json();
+			return res;
+		} catch {
+			throw `Error at the fetch createUser`;
+		}
+	},
+
+	async getToken(password: string, email: string): Promise<string> {
+		try {
+			const signup: Response = await fetch(`${API_BASE_URL}/auth/token`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			});
+			const token: string = await signup.json();
+			this.setToken(token);
+			return token;
+		} catch {
+			throw `Error at the fetch getToken`;
+		}
+	},
+
+	setState(newState): void {
+		this.data = newState;
+		for (const cb of this.listeners) {
+			cb();
+		}
+	},
+	suscribe(callback: (any) => any): void {
+		this.listeners.push(callback);
+	},
 };
