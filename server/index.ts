@@ -4,9 +4,9 @@ import * as path from 'path';
 import * as cors from 'cors';
 
 //Controllers
-import { createUser, getPets, updateUser } from './controllers/user-controller';
+import { createUser, getUser, getPets, updateUser } from './controllers/user-controller';
 import { registerPet, updatePet, deletePet } from './controllers/pet-controller';
-import { authUser, getToken } from './controllers/auth-controller';
+import { authUser, getToken, updateUserPassword } from './controllers/auth-controller';
 import { uploadCloudinaryImg } from './controllers/cloudinary-controller';
 import {
 	registerPetAlgolia,
@@ -62,15 +62,31 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 	}
 });
 
+app.get(`/me`, authMiddleware, async (req, res): Promise<User> => {
+	const userId = req._user.id;
+	try {
+		const user = await getUser(userId);
+		return user;
+	} catch {
+		res.status(400).json({ error: 'Problems with the userId for getUser' });
+	}
+});
+
 //Update user
 app.put(`/me`, authMiddleware, async (req, res): Promise<void> => {
-	const { fullname, email, password } = req.body;
+	const { fullname, password } = req.body;
 	const userId = req._user.id;
 
-	if ((fullname && email) || password) {
-		const updatedUser = await updateUser(fullname, email, userId);
-
-		return updatedUser;
+	if (fullname && password) {
+		const updatedUser: string = await updateUser(fullname, userId);
+		const updatePassword: string = await updateUserPassword(userId, password);
+		res.status(400).json({ updatedUser, updatePassword });
+	} else if (password) {
+		const updatePassword: string = await updateUserPassword(userId, password);
+		res.status(400).json(updatePassword);
+	} else if (fullname) {
+		const updatedUser: string = await updateUser(fullname, userId);
+		res.status(400).json(updatedUser);
 	} else {
 		res.status(400).json({ message: `Missing data in the body` });
 	}

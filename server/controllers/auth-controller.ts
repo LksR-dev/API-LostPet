@@ -52,7 +52,7 @@ async function getToken(email: string, password: string): Promise<string> {
 async function updateUserPassword(userId: number, password: string) {
 	try {
 		const passHash = getSHA256ofString(password);
-		await Auth.update({ passHash }, { where: { userId: userId } });
+		await Auth.update({ password: passHash }, { where: { userId: userId } });
 		return `User password has been updated`;
 	} catch {
 		throw `Error to update user password`;

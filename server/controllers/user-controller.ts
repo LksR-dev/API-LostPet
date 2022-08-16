@@ -1,4 +1,3 @@
-import { where } from 'sequelize/types';
 import { User } from '../models';
 import { Pet } from '../models';
 
@@ -19,9 +18,16 @@ async function createUser(fullname: string, email: string): Promise<User> {
 	}
 }
 
-async function updateUser(fullname: string, email: string, userId: number): Promise<any> {
+async function getUser(userId: number): Promise<User> {
+	if (userId) {
+		const user: User = await User.findByPk(userId);
+		return user;
+	}
+}
+
+async function updateUser(fullname: string, userId: number): Promise<any> {
 	try {
-		await User.update({ fullname, email }, { where: { id: userId } });
+		await User.update({ fullname }, { where: { id: userId } });
 		return `The user has been updated correctly`;
 	} catch {
 		throw `Problems at create user.`;
@@ -38,4 +44,4 @@ async function userData(userId): Promise<User> {
 	return user;
 }
 
-export { createUser, userData, getPets, updateUser };
+export { createUser, userData, getPets, updateUser, getUser };
