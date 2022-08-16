@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://lost-pet-dwfm7.herokuapp.com' || 'http://localhost:3000';
 
 export const state = {
 	data: {
@@ -7,8 +7,37 @@ export const state = {
 	},
 	listeners: [],
 
+	initLocalStorage() {
+		const dataUser: Storage = JSON.parse(localStorage.getItem('dataUser') as any);
+
+		if (!dataUser || dataUser === null || dataUser === undefined) {
+			return;
+		} else {
+			this.setState(dataUser);
+		}
+	},
+
 	getState(): void {
 		return this.data;
+	},
+
+	setState(newState): void {
+		this.data = newState;
+		for (const cb of this.listeners) {
+			cb();
+		}
+	},
+
+	suscribe(callback: (any) => any): void {
+		this.listeners.push(callback);
+	},
+
+	setUserDataLocalStorage() {
+		const cs = this.getState();
+		const dataUser = cs.user;
+		if (dataUser) {
+			localStorage.setItem('dataUser', JSON.stringify(dataUser));
+		}
 	},
 
 	setUserEmailName(fullame, email): void {
@@ -21,8 +50,7 @@ export const state = {
 	setToken(token: string) {
 		const cs = this.getState().user;
 		cs.token = token;
-		console.log(cs);
-
+		this.setUserDataLocalStorage();
 		this.setState(cs);
 	},
 
@@ -73,13 +101,10 @@ export const state = {
 		}
 	},
 
-	setState(newState): void {
-		this.data = newState;
-		for (const cb of this.listeners) {
-			cb();
-		}
-	},
-	suscribe(callback: (any) => any): void {
-		this.listeners.push(callback);
+	async updateDataUser(fullname?, email?, password?) {
+		await fetch(`${API_BASE_URL}/me`, {
+			method: 'PUT',
+			headers: {},
+		});
 	},
 };
