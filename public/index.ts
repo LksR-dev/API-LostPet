@@ -1,7 +1,10 @@
+import { isSwitchStatement } from 'typescript';
 import { state } from './state';
 
 (async function () {
-	state.setUserEmailName({ fullname: `lucass`, email: `lucass@gmail.com`, token: `e34kos` });
+	console.log(state.getUserData());
+	state.setUserData({ fullname: `lucass`, email: `lucass@gmail.com`, token: `e34kos` });
+	console.log(state.getUserData());
 
 	// const userData = state.getUserData();
 	// // state.initLocalStorage();

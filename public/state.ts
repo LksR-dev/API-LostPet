@@ -38,35 +38,23 @@ export const state = {
 
 	setUserDataLocalStorage() {
 		const userData = this.getUserData();
-
 		console.log(userData);
+
 		if (userData) {
 			localStorage.setItem('dataUser', JSON.stringify(userData));
 		}
 	},
 
-	setUserEmailName(userData): void {
-		const cs = this.getUserData();
+	setUserData(userData): void {
+		const user = this.getUserData();
 
-		if (userData.fullname) {
-			cs.fullName = userData.fullname;
-			this.setState(cs);
+		if (userData.fullName || userData.email || userData.token) {
+			user.fullName = userData.fullname;
+			user.email = userData.email;
+			user.token = userData.token;
+			this.setState(user);
 			this.setUserDataLocalStorage();
 		}
-		if (userData.email) {
-			cs.email = userData.email;
-			this.setState(cs);
-			this.setUserDataLocalStorage();
-		}
-		if (userData.token) {
-			cs.token = userData.token;
-			this.setUserDataLocalStorage();
-			this.setState(cs);
-		}
-	},
-
-	setToken(token: string) {
-		const cs = this.getState();
 	},
 
 	setURI(URI: string): void {
