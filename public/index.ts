@@ -12,8 +12,14 @@ import { state } from './state';
 	console.log(`Im the userToken response`, userToken);
 	//Get User
 	const getUser = await state.getUser();
-	console.log(getUser);
+	console.log(`Im the getUser`, getUser);
 	//Update User
-	const updateUser = await state.updateDataUser({ password: `ternero39` });
-	console.log(updateUser);
+	const updateUser = await state.updateDataUser({ fullName: `luks666` });
+	console.log(`Im the updateUser`, updateUser);
+	//Get Pets
+	const pets = await state.getPetsAroundTo('-26.7586707', '-65.2697487');
+	console.log(`Im the getpets`, pets);
+	//ADD Pet
+	// const newPet = await state.addPet('puflito', 'puflito.jpg', '-26.7586707', '-65.2697487');
+	// console.log(`Im the newPet`, newPet);
 })();

@@ -117,7 +117,7 @@ export const state = {
 		}
 	},
 
-	async getUser() {
+	async getUser(): Promise<Response> {
 		const userData = this.getUserData();
 		const token: string = userData.token;
 
@@ -157,5 +157,36 @@ export const state = {
 		} catch {
 			throw `Error at the fetch to updateUser`;
 		}
+	},
+
+	async getPetsAroundTo(lat: string, lng: string): Promise<Object> {
+		try {
+			this.setUserData({ lat, lng });
+			const resp: Response = await fetch(`${API_BASE_URL}/pets-around?lat=${lat}&lng=${lng}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const hits: object = await resp.json();
+			return hits;
+		} catch {
+			throw `Error to getPets fetch.`;
+		}
+	},
+
+	async addPet(petname: string, img: string, lat: string, lng: string): Promise<object> {
+		const userData = this.getUserData();
+
+		const resp: Response = await fetch(`${API_BASE_URL}/user/register-pet`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `bearer ${userData.token}`,
+			},
+			body: JSON.stringify({ petname, img, lat, lng }),
+		});
+		const pet: object = await resp.json();
+		return pet;
 	},
 };

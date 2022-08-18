@@ -93,11 +93,11 @@ app.put(`/me`, authMiddleware, async (req, res): Promise<void> => {
 });
 
 //Find pets around to lat & lng
-app.get(`/pets-around`, async (req, res) => {
+app.get(`/pets-around`, async (req, res): Promise<void> => {
 	const { lat, lng } = req.query;
 
 	if (lat && lng) {
-		const hits = await searchPets(lat, lng);
+		const hits: object = await searchPets(lat, lng);
 		res.status(200).json(hits);
 	} else {
 		res.status(400).json({ message: `Missing data in the body` });
