@@ -44,7 +44,7 @@ app.post(`/auth`, async (req, res): Promise<void> => {
 		const userId: number = userData.get('id') as any;
 		const authCreated: Auth = await authUser(email, password, userId);
 
-		res.json(authCreated);
+		res.status(200).json(authCreated);
 	} catch (err) {
 		res.status(400).json({ message: `Missing data in the body` });
 	}
@@ -56,7 +56,7 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 
 	try {
 		const token = await getToken(email, password);
-		res.json(token);
+		res.status(200).json(token);
 	} catch {
 		res.status(400).json({ error: 'Missing data in the body' });
 	}
@@ -66,7 +66,7 @@ app.get(`/me`, authMiddleware, async (req, res): Promise<void> => {
 	const userId = req._user.id;
 	try {
 		const user: User = await getUser(userId);
-		res.status(400).json(user);
+		res.status(200).json(user);
 	} catch {
 		res.status(400).json({ error: 'Problems with the userId for getUser' });
 	}
@@ -80,13 +80,13 @@ app.put(`/me`, authMiddleware, async (req, res): Promise<void> => {
 	if (fullname && password) {
 		const updatedUser: string = await updateUser(fullname, userId);
 		const updatePassword: string = await updateUserPassword(userId, password);
-		res.status(400).json({ updatedUser, updatePassword });
+		res.status(200).json({ updatedUser, updatePassword });
 	} else if (password) {
 		const updatePassword: string = await updateUserPassword(userId, password);
-		res.status(400).json(updatePassword);
+		res.status(200).json(updatePassword);
 	} else if (fullname) {
 		const updatedUser: string = await updateUser(fullname, userId);
-		res.status(400).json(updatedUser);
+		res.status(200).json(updatedUser);
 	} else {
 		res.status(400).json({ message: `Missing data in the body` });
 	}
@@ -98,7 +98,7 @@ app.get(`/pets-around`, async (req, res) => {
 
 	if (lat && lng) {
 		const hits = await searchPets(lat, lng);
-		res.json(hits);
+		res.status(200).json(hits);
 	} else {
 		res.status(400).json({ message: `Missing data in the body` });
 	}
@@ -114,7 +114,7 @@ app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> =
 		//Algolia section
 		const algoliaRes: object = await registerPetAlgolia(pet);
 
-		res.json({ pet, algoliaRes });
+		res.status(200).json({ pet, algoliaRes });
 	} else {
 		res.status(400).json({ message: `Error userId and/or to need data in req.body` });
 	}
@@ -139,7 +139,7 @@ app.put(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 		//Algolia SECTION
 		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname);
 
-		res.json({
+		res.status(200).json({
 			messageDB: `Total update pets: ${pet}`,
 			messageAlgolia: `Update pet objectID: ${algoliaPet.objectID}`,
 		});
@@ -156,7 +156,7 @@ app.delete(`/me/pet/:id`, authMiddleware, async (req, res) => {
 		const petDeleted = await deletePet(petId, userId);
 		const petDeletedAlgolia = await deletePetAlgolia(petId);
 
-		res.json({
+		res.status(200).json({
 			message: `The pet has been deleted correctly: ${petDeleted}`,
 			messageAlgolia: `${petDeletedAlgolia}`,
 		});

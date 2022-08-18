@@ -121,37 +121,41 @@ export const state = {
 		const userData = this.getUserData();
 		const token: string = userData.token;
 
-		const resp = await fetch(`${API_BASE_URL}/me`, {
-			method: 'GET',
-			headers: { Authorization: `bearer ${token}` },
-		});
-		const user = await resp.json();
-		console.log(user);
+		try {
+			const resp = await fetch(`${API_BASE_URL}/me`, {
+				method: 'GET',
+				headers: { Authorization: `bearer ${token}` },
+			});
+			const user: Response = await resp.json();
+			return user;
+		} catch {
+			throw `Error to getUser.`;
+		}
 	},
 
-	// async updateDataUser(data: object): Promise<Response> {
-	// 	const cs = this.getState();
-	// 	const token: string = cs.token;
-	// 	const userData = data as any;
-	// 	const fullname = userData.fullname;
-	// 	const password = userData.password;
+	async updateDataUser(data: object): Promise<Response> {
+		const cs = this.getUserData();
+		const token: string = cs.token;
+		const userData = data as any;
+		const fullname = userData.fullName;
+		const password = userData.password;
 
-	// 	try {
-	// 		const resp = await fetch(`${API_BASE_URL}/me`, {
-	// 			method: 'PUT',
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 				Authorization: `bearer ${token}`,
-	// 			},
-	// 			body: JSON.stringify({
-	// 				fullname,
-	// 				password,
-	// 			}),
-	// 		});
-	// 		const updateUser: Response = await resp.json();
-	// 		return updateUser;
-	// 	} catch {
-	// 		throw `Error at the fetch to updateUser`;
-	// 	}
-	// },
+		try {
+			const resp: Response = await fetch(`${API_BASE_URL}/me`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `bearer ${token}`,
+				},
+				body: JSON.stringify({
+					fullname,
+					password,
+				}),
+			});
+			const updateUser: Response = await resp.json();
+			return updateUser;
+		} catch {
+			throw `Error at the fetch to updateUser`;
+		}
+	},
 };
