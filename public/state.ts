@@ -38,21 +38,34 @@ export const state = {
 
 	setUserDataLocalStorage() {
 		const userData = this.getUserData();
-		console.log(userData);
 
-		if (userData) {
-			localStorage.setItem('dataUser', JSON.stringify(userData));
-		}
+		userData
+			? localStorage.setItem('dataUser', JSON.stringify(userData))
+			: console.error(`Missing userData in setUserDataLocalStorage`);
 	},
 
 	setUserData(userData): void {
-		const user = this.getUserData();
+		const cs = this.getState();
 
-		if (userData.fullName || userData.email || userData.token) {
-			user.fullName = userData.fullname;
-			user.email = userData.email;
-			user.token = userData.token;
-			this.setState(user);
+		if (userData.fullName) {
+			cs.user.fullName = userData.fullName;
+			this.setState(cs);
+			this.setUserDataLocalStorage();
+		}
+		if (userData.email) {
+			cs.user.email = userData.email;
+			this.setState(cs);
+			this.setUserDataLocalStorage();
+		}
+		if (userData.token) {
+			cs.user.token = userData.token;
+			this.setState(cs);
+			this.setUserDataLocalStorage();
+		}
+		if (userData.lat && userData.lng) {
+			cs.user.lat = userData.lat;
+			cs.user.lng = userData.lng;
+			this.setState(cs);
 			this.setUserDataLocalStorage();
 		}
 	},
@@ -63,56 +76,58 @@ export const state = {
 		this.setState(cs);
 	},
 
-	// async createUser(password: string, fullname: string, email: string): Promise<object> {
-	// 	try {
-	// 		this.setUserEmailName({fullname, email});
-	// 		const signup: Response = await fetch(`${API_BASE_URL}/auth`, {
-	// 			method: 'POST',
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 			},
-	// 			body: JSON.stringify({
-	// 				fullname,
-	// 				email,
-	// 				password,
-	// 			}),
-	// 		});
-	// 		const res: object = signup.json();
-	// 		return res;
-	// 	} catch {
-	// 		throw `Error at the fetch createUser`;
-	// 	}
-	// },
+	async createUser(fullName: string, email: string, password: string): Promise<object> {
+		try {
+			this.setUserData({ fullName, email });
+			const signup: Response = await fetch(`${API_BASE_URL}/auth`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					fullName,
+					email,
+					password,
+				}),
+			});
+			const res: object = signup.json();
+			return res;
+		} catch {
+			throw `Error at the fetch createUser`;
+		}
+	},
 
-	// async getToken(password: string, email: string): Promise<string> {
-	// 	try {
-	// 		const signup: Response = await fetch(`${API_BASE_URL}/auth/token`, {
-	// 			method: 'POST',
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 			},
-	// 			body: JSON.stringify({
-	// 				email,
-	// 				password,
-	// 			}),
-	// 		});
-	// 		const token: string = await signup.json();
-	// 		this.setToken(token);
-	// 		return token;
-	// 	} catch {
-	// 		throw `Error at the fetch getToken`;
-	// 	}
-	// },
+	async getToken(password: string, email: string): Promise<string> {
+		try {
+			const signup: Response = await fetch(`${API_BASE_URL}/auth/token`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			});
+			const token: string = await signup.json();
+			this.setUserData({ token });
+			return token;
+		} catch {
+			throw `Error at the fetch getToken`;
+		}
+	},
 
-	// async getUser() {
-	// 	const cs = this.getState();
-	// 	const token: string = cs.token;
-	// 	const resp = await fetch(`${API_BASE_URL}/me`, {
-	// 		headers: { Authorization: `bearer ${token}` },
-	// 	});
-	// 	const user = await resp.json();
-	// 	console.log(user);
-	// },
+	async getUser() {
+		const userData = this.getUserData();
+		const token: string = userData.token;
+
+		const resp = await fetch(`${API_BASE_URL}/me`, {
+			method: 'GET',
+			headers: { Authorization: `bearer ${token}` },
+		});
+		const user = await resp.json();
+		console.log(user);
+	},
 
 	// async updateDataUser(data: object): Promise<Response> {
 	// 	const cs = this.getState();

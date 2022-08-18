@@ -37,10 +37,10 @@ app.get('/env', (req, res) => {
 
 //Signup
 app.post(`/auth`, async (req, res): Promise<void> => {
-	const { fullname, email, password } = req.body;
+	const { fullName, email, password } = req.body;
 
 	try {
-		const userData: User = await createUser(fullname, email);
+		const userData: User = await createUser(fullName, email);
 		const userId: number = userData.get('id') as any;
 		const authCreated: Auth = await authUser(email, password, userId);
 
@@ -62,11 +62,11 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 	}
 });
 
-app.get(`/me`, authMiddleware, async (req, res): Promise<User> => {
+app.get(`/me`, authMiddleware, async (req, res): Promise<void> => {
 	const userId = req._user.id;
 	try {
-		const user = await getUser(userId);
-		return user;
+		const user: User = await getUser(userId);
+		res.status(400).json(user);
 	} catch {
 		res.status(400).json({ error: 'Problems with the userId for getUser' });
 	}
