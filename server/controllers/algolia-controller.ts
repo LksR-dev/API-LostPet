@@ -54,13 +54,21 @@ async function searchPets(lat: string, lng: string): Promise<object> {
 
 async function updatePetAlgolia(
 	id: number,
-	lat: number,
-	lng: number,
+	lat: string,
+	lng: string,
 	petName: string,
 ): Promise<any> {
-	const indexItemPet = bodyToIndex({ lat, lng, petName }, id);
-	const pet = indexPet.partialUpdateObject(indexItemPet);
-	return pet;
+	try {
+		const indexItemPet = bodyToIndex({ lat, lng, petName }, id);
+		console.log(`im indexItemPet`, indexItemPet);
+
+		const pet = await indexPet.partialUpdateObject(indexItemPet);
+		console.log(pet);
+
+		return pet;
+	} catch {
+		throw `Error to updatePet on Algolia.`;
+	}
 }
 
 async function deletePetAlgolia(petId: any) {

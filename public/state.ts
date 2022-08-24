@@ -3,7 +3,7 @@ const API_BASE_URL = 'http://localhost:3000';
 export const state = {
 	data: {
 		user: {},
-		pets: [{}],
+		pets: [],
 	},
 	listeners: [],
 
@@ -13,7 +13,7 @@ export const state = {
 		if (!dataUser || dataUser === null || dataUser === undefined) {
 			return;
 		} else {
-			this.setState(dataUser);
+			this.setUserData(dataUser);
 		}
 	},
 
@@ -68,6 +68,12 @@ export const state = {
 			this.setState(cs);
 			this.setUserDataLocalStorage();
 		}
+	},
+
+	addPetState(newPet) {
+		const cs = this.getState();
+		cs.pets.push(newPet);
+		this.setState(cs);
 	},
 
 	setURI(URI: string): void {
@@ -177,16 +183,59 @@ export const state = {
 
 	async addPet(petname: string, img: string, lat: string, lng: string): Promise<object> {
 		const userData = this.getUserData();
+		try {
+			const resp: Response = await fetch(`${API_BASE_URL}/user/register-pet`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `bearer ${userData.token}`,
+				},
+				body: JSON.stringify({ petname, img, lat, lng }),
+			});
+			const pet: object = await resp.json();
+			this.addPetState(pet);
+			return pet;
+		} catch {
+			throw `Error to addPet fetch.`;
+		}
+	},
 
-		const resp: Response = await fetch(`${API_BASE_URL}/user/register-pet`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `bearer ${userData.token}`,
-			},
-			body: JSON.stringify({ petname, img, lat, lng }),
-		});
-		const pet: object = await resp.json();
-		return pet;
+	async getMyPets(): Promise<object> {
+		try {
+			const userData = this.getUserData();
+			const resp: Response = await fetch(`${API_BASE_URL}/me/pets`, {
+				headers: { Authorization: `bearer ${userData.token}` },
+			});
+			const myPets: Object = await resp.json();
+			return myPets;
+		} catch {
+			throw `Error to get myPets fetch.`;
+		}
+	},
+
+	async updatePet(
+		petId?: number,
+		petname?: string,
+		lat?: string,
+		lng?: string,
+		img?: string,
+		founded?: boolean,
+	): Promise<object> {
+		const userData = this.getUserData();
+		const token: string = userData.token;
+		try {
+			const resp: Response = await fetch(`${API_BASE_URL}/me/pet/${petId}`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `bearer ${token}`,
+				},
+				body: JSON.stringify({ petname, img, lat, lng }),
+			});
+			const data: object = await resp.json();
+			return data;
+		} catch {
+			throw `Error at updatePet fetch.`;
+		}
 	},
 };

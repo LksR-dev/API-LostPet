@@ -24,8 +24,8 @@ async function registerPet(
 async function updatePet(
 	petId: number,
 	userId: number,
-	lat: number,
-	lng: number,
+	lat: string,
+	lng: string,
 	petName: string,
 	img: string,
 	founded: boolean,
@@ -38,16 +38,16 @@ async function updatePet(
 			},
 		);
 		return pet;
-	}
-
-	if (founded) {
-		const pet = await Pet.update(
+	} else if (founded) {
+		await Pet.update(
 			{ founded },
 			{
 				where: { id: petId, userId: userId },
 			},
 		);
 		return `The pet state has been updated correctly`;
+	} else {
+		throw `Error to update pet on pet controller.`;
 	}
 }
 

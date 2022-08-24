@@ -126,24 +126,26 @@ app.get(`/me/pets`, authMiddleware, async (req, res): Promise<void> => {
 });
 
 //Update data pet
-app.put(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
+app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	const { petname, lat, lng, img, founded } = req.body;
 	const petId = req.params['id'];
 	const userId = req._user.id;
-
-	if (founded || petname || (lat && lng) || img) {
+	try {
 		//Cloudinary section
 		// const image = await uploadCloudinaryImg(img);
 		//DB SECTION
 		const pet = await updatePet(petId, userId, lat, lng, petname, img, founded);
+		console.log(`Im the petController`, pet);
+
 		//Algolia SECTION
 		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname);
+		console.log(`Im the algoliaPetController`, algoliaPet);
 
 		res.status(200).json({
 			messageDB: `Total update pets: ${pet}`,
 			messageAlgolia: `Update pet objectID: ${algoliaPet.objectID}`,
 		});
-	} else {
+	} catch {
 		res.status(400).json({ mesasge: `Missing data in the body.` });
 	}
 });
