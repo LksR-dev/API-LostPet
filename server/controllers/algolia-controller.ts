@@ -3,6 +3,10 @@ import { indexPet } from '../lib/algolia';
 const bodyToIndex = (body, id?: number) => {
 	const resp = {} as any;
 
+	if (id) {
+		resp.objectID = id;
+	}
+
 	if (body.petName) {
 		resp.petName = body.petName;
 	}
@@ -11,9 +15,6 @@ const bodyToIndex = (body, id?: number) => {
 			lat: body.lat,
 			lng: body.lng,
 		};
-	}
-	if (id) {
-		resp.objectID = id;
 	}
 
 	return resp;
@@ -54,20 +55,16 @@ async function searchPets(lat: string, lng: string): Promise<object> {
 
 async function updatePetAlgolia(
 	id: number,
-	lat: string,
-	lng: string,
+	lat: number,
+	lng: number,
 	petName: string,
 ): Promise<any> {
 	try {
 		const indexItemPet = bodyToIndex({ lat, lng, petName }, id);
-		console.log(`im indexItemPet`, indexItemPet);
-
 		const pet = await indexPet.partialUpdateObject(indexItemPet);
-		console.log(pet);
-
 		return pet;
 	} catch {
-		throw `Error to updatePet on Algolia.`;
+		return `problems to updatepet algolia`;
 	}
 }
 

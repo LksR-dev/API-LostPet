@@ -44,7 +44,7 @@ async function getToken(email: string, password: string): Promise<string> {
 			const token: string = jwt.sign({ id: auth.get('userId') }, SECRET);
 			return token;
 		} else {
-			console.error({ message: `Email or password incorrect` });
+			return `Email or password incorrect`;
 		}
 	}
 }

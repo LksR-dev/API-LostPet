@@ -25,6 +25,24 @@ async function getUser(userId: number): Promise<User> {
 	}
 }
 
+async function getEmail(email: string): Promise<User> {
+	try {
+		const user = await User.findOne({ where: { email } });
+		return user;
+	} catch {
+		throw `Email doesn't exists.`;
+	}
+}
+
+async function getAllUser(): Promise<User[]> {
+	try {
+		const user: User[] = await User.findAll();
+		return user;
+	} catch {
+		throw `Email doesn't exists.`;
+	}
+}
+
 async function updateUser(fullname: string, userId: number): Promise<any> {
 	try {
 		await User.update({ fullname }, { where: { id: userId } });
@@ -44,4 +62,4 @@ async function userData(userId): Promise<User> {
 	return user;
 }
 
-export { createUser, userData, getPets, updateUser, getUser };
+export { createUser, userData, getPets, getAllUser, updateUser, getUser, getEmail };

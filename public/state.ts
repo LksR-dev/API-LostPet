@@ -1,3 +1,5 @@
+import { off } from 'process';
+
 const API_BASE_URL = 'http://localhost:3000';
 
 export const state = {
@@ -82,9 +84,31 @@ export const state = {
 		this.setState(cs);
 	},
 
-	async createUser(fullName: string, email: string, password: string): Promise<object> {
+	async authEmail(email: string): Promise<Response> {
+		this.setUserData({ email });
 		try {
-			this.setUserData({ fullName, email });
+			const resp = await fetch(`${API_BASE_URL}/auth/email`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ email }),
+			});
+
+			const user = await resp.json();
+			if (user) {
+				this.setUserData({ fullName: user.fullname });
+			}
+			return user;
+		} catch {
+			throw `Problems at the fetch authEmail.`;
+		}
+	},
+
+	async createUser(fullName: string, password: string): Promise<object> {
+		try {
+			const email = this.getUserData().email;
+			this.setUserData({ fullName });
 			const signup: Response = await fetch(`${API_BASE_URL}/auth`, {
 				method: 'POST',
 				headers: {
@@ -213,16 +237,16 @@ export const state = {
 		}
 	},
 
-	async updatePet(
-		petId?: number,
-		petname?: string,
-		lat?: string,
-		lng?: string,
-		img?: string,
-		founded?: boolean,
-	): Promise<object> {
+	async updatePet(data): Promise<object> {
 		const userData = this.getUserData();
 		const token: string = userData.token;
+		const petId: number = data.petId;
+		const petname: string = data.petname;
+		const petImg: string = data.img;
+		const petLat: number = data.lat;
+		const petLng: number = data.lng;
+		const petFounded: boolean = data.founded;
+
 		try {
 			const resp: Response = await fetch(`${API_BASE_URL}/me/pet/${petId}`, {
 				method: 'PATCH',
@@ -230,12 +254,36 @@ export const state = {
 					'Content-Type': 'application/json',
 					Authorization: `bearer ${token}`,
 				},
-				body: JSON.stringify({ petname, img, lat, lng }),
+				body: JSON.stringify({
+					petname,
+					img: petImg,
+					lat: petLat,
+					lng: petLng,
+					founded: petFounded,
+				}),
 			});
 			const data: object = await resp.json();
 			return data;
 		} catch {
 			throw `Error at updatePet fetch.`;
+		}
+	},
+
+	async deletePet(petId) {
+		const userData = this.getUserData();
+		const token: string = userData.token;
+		try {
+			const resp: Response = await fetch(`${API_BASE_URL}/me/pet/${petId}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `bearer ${token}`,
+				},
+			});
+			const data: object = await resp.json();
+			return data;
+		} catch {
+			throw `Error at deletePet fetch.`;
 		}
 	},
 };

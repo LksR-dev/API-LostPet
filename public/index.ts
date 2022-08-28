@@ -3,31 +3,88 @@ import { state } from './state';
 
 (async function () {
 	state.initLocalStorage();
-	//Create user
-	const createUser = await state.createUser('lukitas', 'lukitas@gmail.com', 'ternero39');
-	console.log(`Im the createUser response`, createUser);
-	//Get Token
-	const userToken = await state.getToken('ternero39', 'lukitas@gmail.com');
-	console.log(`Im the userToken response`, userToken);
-	//Get User
-	const getUser = await state.getUser();
-	console.log(`Im the getUser`, getUser);
-	//Update User
-	// const updateUser = await state.updateDataUser({ fullName: `luks666` });
-	// console.log(`Im the updateUser`, updateUser);
-	//Get Pets AroundTo
-	const pets = await state.getPetsAroundTo('-26.7586707', '-65.2697487');
-	console.log(`Im the getpets around to`, pets);
-	//ADD Pet
-	// const newPet = await state.addPet('kira', 'kira.jpg', '-26.7586707', '-65.2697487');
-	// console.log(`Im the newPet`, newPet);
-	//Get My Pets
-	const myPets: object = await state.getMyPets();
-	console.log(`Im the getmypets`, myPets);
-	// Update Pet
-	const updatePet = await state.updatePet(7, 'pepita', '33', '44', 'pepita.jpg', false);
-	console.log(updatePet);
 
-	const myPets2: object = await state.getMyPets();
-	console.log(`Im the getmypets`, myPets2);
+	// // If the email exists, the route is this
+	// const emailValidation = await state.authEmail('lukitas@gmail.com');
+	// console.log(`Im the email validation`, emailValidation);
+
+	// //Get Token
+	// const userToken = await state.getToken('lucas123', 'lukitas@gmail.com');
+	// console.log(`Im the userToken response`, userToken);
+
+	// //Get User
+	// const getUser = await state.getUser();
+	// console.log(`Im the getUser`, getUser);
+
+	// //Update User
+	// const updateUser = await state.updateDataUser({ fullName: `luks666`, password: `lucas123` });
+	// console.log(`Im the updateUser`, updateUser);
+
+	// //Get Pets AroundTo
+	// const pets = await state.getPetsAroundTo('-26.7586707', '-65.2697487');
+	// console.log(`Im the getpets around to`, pets);
+
+	// //ADD Pet
+	// // const newPet = await state.addPet('chicharrron', 'chicharrron.jpg', '-26.7586707', '-65.2697487');
+	// // console.log(`Im the newPet`, newPet);
+
+	// //Get My Pets
+	// const myPets: object = await state.getMyPets();
+	// console.log(`Im the getmypets`, myPets);
+
+	// // Update Pet
+	// const updatePet = await state.updatePet({ petId: 9, petname: 'pedrita', img: 'pedrita.png' });
+	// console.log(updatePet);
+
+	// const myPetsAgain: object = await state.getMyPets();
+	// console.log(`Im the getmypetsagain`, myPetsAgain);
+	/*------------------------------------------------------------
+	--------------------------------------------------------------
+	--------------------------------------------------------------
+	--------------------------------------------------------------
+	--------------------------------------------------------------
+	
+	*/
+
+	// If the email doesn't exists, the route is this
+	// const emailValidationUser2 = await state.authEmail('chipotle34@gmail.com');
+	// console.log(`Im the email validation`, emailValidationUser2);
+
+	// Create user
+	// if (!emailValidationUser2) {
+	// 	const createUser = await state.createUser('chipotle', 'pepitas333');
+	// 	console.log(`Im the createUser response`, createUser);
+	// }
+
+	//Get Token
+	// const userToken2 = await state.getToken('chipotle333', 'chipotle34@gmail.com');
+	// console.log(`Im the userToken response`, userToken2);
+
+	//Get User
+	// const getUser2 = await state.getUser();
+	// console.log(`Im the getUser`, getUser2);
+
+	//Update User
+	// const updateUser = await state.updateDataUser({ password: `chipotle333` });
+	// console.log(`Im the updateUser`, updateUser);
+
+	// Get Pets AroundTo
+	// const pets = await state.getPetsAroundTo('-26.7586707', '-65.2697487');
+	// console.log(`Im the getpets around to`, pets);
+
+	//ADD Pet
+	// const newPet = await state.addPet('nuez', 'nuez.jpg', '-26.7586707', '-65.2697487');
+	// console.log(`Im the newPet`, newPet);
+
+	//Get My Pets
+	// const myPets: object = await state.getMyPets();
+	// console.log(`Im the getmypets`, myPets);
+
+	// Update Pet
+	// const updatePet = await state.updatePet({ petId: 19, petname: 'almendra', img: 'almendra.pngj' });
+	// console.log(updatePet);
+
+	// Delete Pet
+	// const deletePet = await state.deletePet(10);
+	// console.log(deletePet);
 })();

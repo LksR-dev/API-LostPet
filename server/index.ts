@@ -4,7 +4,14 @@ import * as path from 'path';
 import * as cors from 'cors';
 
 //Controllers
-import { createUser, getUser, getPets, updateUser } from './controllers/user-controller';
+import {
+	createUser,
+	getUser,
+	getAllUser,
+	getPets,
+	updateUser,
+	getEmail,
+} from './controllers/user-controller';
 import { registerPet, updatePet, deletePet } from './controllers/pet-controller';
 import { authUser, getToken, updateUserPassword } from './controllers/auth-controller';
 import { uploadCloudinaryImg } from './controllers/cloudinary-controller';
@@ -34,7 +41,6 @@ app.get('/env', (req, res) => {
 		environment: process.env.NODE_ENV,
 	});
 });
-
 //Signup
 app.post(`/auth`, async (req, res): Promise<void> => {
 	const { fullName, email, password } = req.body;
@@ -59,6 +65,18 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 		res.status(200).json(token);
 	} catch {
 		res.status(400).json({ error: 'Missing data in the body' });
+	}
+});
+
+app.post(`/auth/email`, async (req, res): Promise<void> => {
+	const { email } = req.body;
+	try {
+		console.log(email);
+
+		const user = await getEmail(email);
+		res.status(200).json(user);
+	} catch {
+		res.status(400).json({ message: 'Problems with the email at endpoint auth email.' });
 	}
 });
 
@@ -135,11 +153,8 @@ app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 		// const image = await uploadCloudinaryImg(img);
 		//DB SECTION
 		const pet = await updatePet(petId, userId, lat, lng, petname, img, founded);
-		console.log(`Im the petController`, pet);
-
 		//Algolia SECTION
 		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname);
-		console.log(`Im the algoliaPetController`, algoliaPet);
 
 		res.status(200).json({
 			messageDB: `Total update pets: ${pet}`,
@@ -156,11 +171,11 @@ app.delete(`/me/pet/:id`, authMiddleware, async (req, res) => {
 
 	try {
 		const petDeleted = await deletePet(petId, userId);
-		const petDeletedAlgolia = await deletePetAlgolia(petId);
+		await deletePetAlgolia(petId);
 
 		res.status(200).json({
 			message: `The pet has been deleted correctly: ${petDeleted}`,
-			messageAlgolia: `${petDeletedAlgolia}`,
+			messageAlgolia: `The pet has been deleted correctly`,
 		});
 	} catch {
 		res.status(400).json({ message: `Missing data in the body` });
