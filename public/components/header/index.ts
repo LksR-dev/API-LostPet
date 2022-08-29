@@ -4,18 +4,24 @@ const logo = require('../../assets/logo.svg');
 
 class Header extends HTMLElement {
 	connectedCallback() {
+		const currentUser = state.getUserData();
+		state.suscribe(() => {
+			if (currentUser.token) {
+				this.render();
+			}
+		});
 		this.render();
 	}
 	render() {
 		const currentUser = state.getUserData();
 		const session = () => {
 			if (currentUser.email) {
-				this.innerHTML = `
+				return (this.innerHTML = `
           <div class='menu__session-container'>
-            <text-comp use='link'>prueba</text-comp>
-            <text-comp use='link'>cerrar sesion</text-comp>
+            <text-comp>${currentUser.email}</text-comp>
+            <text-comp class='close__session' use='link'>Cerrar sesión</text-comp>
             </div>
-            `;
+            `);
 			} else {
 				return `<div></div>`;
 			}
@@ -55,6 +61,7 @@ class Header extends HTMLElement {
 		const myData = this.querySelector('.my__data');
 		const myReports = this.querySelector('.my__reports');
 		const report = this.querySelector('.reports');
+		const closeSession = this.querySelector('.close__session');
 
 		homeLogo?.addEventListener('click', () => {
 			menuToggle?.classList.remove('active');
@@ -84,6 +91,12 @@ class Header extends HTMLElement {
 			} else {
 				Router.go('/auth-email');
 			}
+		});
+		closeSession?.addEventListener('click', () => {
+			menuToggle?.classList.remove('active');
+			state.clearLocalStorage();
+			state.setState({ user: {} });
+			Router.go('/home');
 		});
 	}
 }

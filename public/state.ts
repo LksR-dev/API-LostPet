@@ -1,5 +1,3 @@
-import { off } from 'process';
-
 const API_BASE_URL = 'http://localhost:3000';
 
 export const state = {
@@ -17,6 +15,10 @@ export const state = {
 		} else {
 			this.setUserData(dataUser);
 		}
+	},
+
+	clearLocalStorage() {
+		localStorage.removeItem('dataUser');
 	},
 
 	getState(): void {
