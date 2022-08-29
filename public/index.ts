@@ -1,9 +1,12 @@
-import { isSwitchStatement } from 'typescript';
+import './components/header';
+import './components/text';
+import { initRouter } from './router';
 import { state } from './state';
 
 (async function () {
 	state.initLocalStorage();
-
+	// const root = document.querySelector('.root');
+	// initRouter(root);
 	// // If the email exists, the route is this
 	// const emailValidation = await state.authEmail('lukitas@gmail.com');
 	// console.log(`Im the email validation`, emailValidation);
