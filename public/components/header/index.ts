@@ -65,7 +65,7 @@ class Header extends HTMLElement {
 
 		homeLogo?.addEventListener('click', () => {
 			menuToggle?.classList.remove('active');
-			Router.go('/home');
+			Router.go('/');
 		});
 
 		myData?.addEventListener('click', () => {

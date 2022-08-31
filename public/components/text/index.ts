@@ -13,14 +13,17 @@ class TextComp extends HTMLElement {
 
 		divEl.innerHTML = this.textContent;
 
+		style.innerHTML = `
+			color: #00000;
+			text-align: center;          
+		`;
+
 		if (use === 'link') {
 			style.innerHTML = `
         .text {
           font-size: 24px;
           font-weight: 700;
-          color: #00000;
           line-height: 36px;
-          text-align: center;          
           cursor: pointer;
         }
       `;
@@ -30,9 +33,17 @@ class TextComp extends HTMLElement {
         .text {
           font-size: 18px;
           font-weight: 400;
-          color: #00000;
           line-height: 24px;
-          text-align: center;          
+					margin: 20px 0px;
+        }
+      `;
+		}
+		if (use === 'title') {
+			style.innerHTML = `
+        .text {
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 24px;
         }
       `;
 		}

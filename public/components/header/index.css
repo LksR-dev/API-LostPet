@@ -1,6 +1,5 @@
 .header {
 	background-color: blue;
-	position: fixed;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
