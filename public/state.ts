@@ -191,7 +191,7 @@ export const state = {
 		}
 	},
 
-	async getPetsAroundTo(lat: string, lng: string): Promise<Object> {
+	async getPetsAroundTo(lat: number, lng: number): Promise<Object> {
 		try {
 			this.setUserData({ lat, lng });
 			const resp: Response = await fetch(`${API_BASE_URL}/pets-around?lat=${lat}&lng=${lng}`, {
@@ -200,8 +200,9 @@ export const state = {
 					'Content-Type': 'application/json',
 				},
 			});
-			const hits: object = await resp.json();
-			return hits;
+			const pets: object = await resp.json();
+
+			return pets;
 		} catch {
 			throw `Error to getPets fetch.`;
 		}

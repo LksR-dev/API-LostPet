@@ -1,6 +1,7 @@
 import './components/header';
 import './components/text';
 import './components/button';
+import './components/pet-card';
 import './pages/home';
 import { initRouter } from './router';
 import { state } from './state';

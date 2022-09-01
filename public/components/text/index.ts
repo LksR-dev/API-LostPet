@@ -13,11 +13,6 @@ class TextComp extends HTMLElement {
 
 		divEl.innerHTML = this.textContent;
 
-		style.innerHTML = `
-			color: #00000;
-			text-align: center;          
-		`;
-
 		if (use === 'link') {
 			style.innerHTML = `
         .text {
@@ -25,6 +20,8 @@ class TextComp extends HTMLElement {
           font-weight: 700;
           line-height: 36px;
           cursor: pointer;
+					color: #00000;
+					text-align: center;
         }
       `;
 		}
@@ -34,7 +31,9 @@ class TextComp extends HTMLElement {
           font-size: 18px;
           font-weight: 400;
           line-height: 24px;
-					margin: 20px 0px;
+					color: #00000;
+					text-align: center;      
+
         }
       `;
 		}
@@ -44,6 +43,20 @@ class TextComp extends HTMLElement {
           font-size: 24px;
           font-weight: 700;
           line-height: 24px;
+					color: #00000;
+					text-align: center;      
+
+        }
+      `;
+		}
+		if (use === 'report') {
+			style.innerHTML = `
+        .text {
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+					color: #3E91DD;
+					text-align: center;
         }
       `;
 		}
