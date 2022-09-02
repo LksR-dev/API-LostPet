@@ -201,7 +201,6 @@ export const state = {
 				},
 			});
 			const pets: object = await resp.json();
-
 			return pets;
 		} catch {
 			throw `Error to getPets fetch.`;

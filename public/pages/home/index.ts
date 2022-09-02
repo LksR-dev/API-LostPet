@@ -28,14 +28,14 @@ class Home extends HTMLElement {
 					pets.forEach((pet) => {
 						console.log(pet);
 						this.innerHTML += `
-							<pet-card id='${pet.objectID}' name='${pet.petName}'></pet-card>
-						`;
+								<pet-card id='${pet.objectID}' name='${pet.petName}'></pet-card>
+							`;
 					});
 				} else {
 					this.innerHTML = `
-						<text-comp use='paragraph'>No hay mascotas perdidas cerca tuyo.</text-comp>
+							<text-comp use='paragraph'>No hay mascotas perdidas cerca tuyo.</text-comp>
 
-					`;
+						`;
 				}
 			});
 		}

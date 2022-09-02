@@ -53,7 +53,6 @@ class PetCard extends HTMLElement {
 
 		const report = this.shadow.querySelector('.report');
 		const edit = this.querySelector('.edit__icon');
-		console.log(report);
 
 		report?.addEventListener('click', (e) => {
 			e.preventDefault();

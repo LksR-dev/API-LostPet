@@ -1,18 +1,19 @@
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey('');
 
-const msg = {
-	to: 'lucasmruizsec05@gmail.com', // Change to your recipient
-	from: 'lucasmruiz05@gmail.com', // Change to your verified sender
-	subject: 'Sending with SendGrid is Fun',
-	text: 'and easy to do anywhere, even with Node.js',
-	html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-};
-sgMail
-	.send(msg)
-	.then(() => {
-		console.log('Email sent');
-	})
-	.catch((error) => {
-		console.error(error);
-	});
+async function sendEmail(to, petName, fullName, phone_number, data) {
+	return await sgMail
+		.send({
+			to,
+			from: 'lucasmruiz05@gmail.com',
+			subject: `${fullName} tiene información sobre ${petName}`,
+			text: `Hola soy ${fullName} y tengo información sobre ${petName}. Info: ${data}. Puedes comunicarte conmigo llamando a ${phone_number}`,
+			html: `<h2>Hola, soy ${fullName} y tengo informacion sobre ${petName}, Info: ${data}, podes comunicarte conmigo llamando al ${phone_number}</h2>`,
+		})
+		.then(() => {
+			console.log(`email sent`);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}

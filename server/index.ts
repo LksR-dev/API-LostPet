@@ -22,6 +22,7 @@ import {
 	deletePetAlgolia,
 } from './controllers/algolia-controller';
 import { authMiddleware } from './controllers/middleware';
+import { report } from './controllers/report-controller';
 import { Auth, Pet, User } from './models';
 
 //Init server and server cfg
@@ -165,7 +166,7 @@ app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	}
 });
 
-app.delete(`/me/pet/:id`, authMiddleware, async (req, res) => {
+app.delete(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	const petId = req.params.id;
 	const userId = req._user.id;
 
@@ -180,6 +181,15 @@ app.delete(`/me/pet/:id`, authMiddleware, async (req, res) => {
 	} catch {
 		res.status(400).json({ message: `Missing data in the body` });
 	}
+});
+
+app.post(`/report-pet/:id`, authMiddleware, async (req, res): Promise<void> => {
+	const { fullName, phone_number, data } = req.body;
+	const petId = parseInt(req.params.id);
+	const userId = req._user.id;
+
+	const reported = await report(userId, petId, phone_number, data, fullName);
+	console.log(reported);
 });
 
 const route = path.resolve(__dirname, '../dist');
