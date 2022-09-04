@@ -8,8 +8,6 @@ async function report(
 	fullname: string,
 ): Promise<any> {
 	try {
-		console.log(userId, petId, phone_number, data, fullname);
-
 		const report: Report = await Report.create({
 			phone_number,
 			report_data: data,
@@ -17,12 +15,9 @@ async function report(
 			userId,
 			petId,
 		});
-		console.log(`soy created`, report);
-
 		const pet: Pet = await Pet.findByPk(petId, { include: [User] });
-		console.log(`soy el pet`, pet);
 
-		return { report, pet };
+		return [report, pet];
 	} catch (err) {
 		throw err;
 	}

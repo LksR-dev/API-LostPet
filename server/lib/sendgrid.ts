@@ -17,3 +17,5 @@ async function sendEmail(to, petName, fullName, phone_number, data) {
 			console.log(err);
 		});
 }
+
+export { sendEmail };

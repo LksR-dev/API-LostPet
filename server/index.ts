@@ -23,6 +23,7 @@ import {
 } from './controllers/algolia-controller';
 import { authMiddleware } from './controllers/middleware';
 import { report } from './controllers/report-controller';
+import { sendEmail } from './lib/sendgrid';
 import { Auth, Pet, User } from './models';
 
 //Init server and server cfg
@@ -72,8 +73,6 @@ app.post(`/auth/token`, async (req, res): Promise<void> => {
 app.post(`/auth/email`, async (req, res): Promise<void> => {
 	const { email } = req.body;
 	try {
-		console.log(email);
-
 		const user = await getEmail(email);
 		res.status(200).json(user);
 	} catch {
@@ -183,13 +182,25 @@ app.delete(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	}
 });
 
-app.post(`/report-pet/:id`, authMiddleware, async (req, res): Promise<void> => {
-	const { fullName, phone_number, data } = req.body;
-	const petId = parseInt(req.params.id);
+app.post(`/report-pet`, authMiddleware, async (req, res): Promise<void> => {
+	const { fullName, phone_number, data, petId } = req.body;
 	const userId = req._user.id;
 
-	const reported = await report(userId, petId, phone_number, data, fullName);
-	console.log(reported);
+	try {
+		const [reported, pet] = await report(userId, petId, phone_number, data, fullName);
+
+		const sentEmail = await sendEmail(
+			pet.user.getDataValue('email'),
+			pet.getDataValue('name'),
+			pet.user.getDataValue('fullname'),
+			reported.getDataValue('phone_number'),
+			reported.getDataValue('report_data'),
+		);
+
+		res.status(200).json({ reported, sentEmail });
+	} catch {
+		res.status(400).json({ message: `Missing data in the body.` });
+	}
 });
 
 const route = path.resolve(__dirname, '../dist');
