@@ -1,8 +1,12 @@
+//Components
 import './components/header';
 import './components/text';
+import './components/input';
 import './components/button';
 import './components/pet-card';
+//Pages
 import './pages/home';
+import './pages/auth-email';
 import { initRouter } from './router';
 import { state } from './state';
 
@@ -52,39 +56,42 @@ import { state } from './state';
 	
 	*/
 
-	// If the email doesn't exists, the route is this
+	// // If the email doesn't exists, the route is this
 	// const emailValidationUser2 = await state.authEmail('chipotle34@gmail.com');
 	// console.log(`Im the email validation`, emailValidationUser2);
 
-	// Create user
+	// // Create user
 	// if (!emailValidationUser2) {
 	// 	const createUser = await state.createUser('chipotle', 'pepitas333');
 	// 	console.log(`Im the createUser response`, createUser);
 	// }
 
-	//Get Token
-	// const userToken2 = await state.getToken('chipotle333', 'chipotle34@gmail.com');
+	// //Get Token
+	// const userToken2 = await state.getToken('pepitas333', 'chipotle34@gmail.com');
 	// console.log(`Im the userToken response`, userToken2);
 
-	//Get User
+	// //Get User
 	// const getUser2 = await state.getUser();
 	// console.log(`Im the getUser`, getUser2);
 
-	//Update User
-	// const updateUser = await state.updateDataUser({ password: `chipotle333` });
-	// console.log(`Im the updateUser`, updateUser);
+	// //Update User
+	// // const updateUser = await state.updateDataUser({ password: `chipotle333` });
+	// // console.log(`Im the updateUser`, updateUser);
 
-	// Get Pets AroundTo
-	// const pets = await state.getPetsAroundTo('-26.7586707', '-65.2697487');
+	// // Get Pets AroundTo
+	// const pets = await state.getPetsAroundTo(-26.7586707, -65.2697487);
 	// console.log(`Im the getpets around to`, pets);
 
-	//ADD Pet
-	// const newPet = await state.addPet('nuez', 'nuez.jpg', '-26.7586707', '-65.2697487');
-	// console.log(`Im the newPet`, newPet);
+	// //ADD Pet
+	// // const newPet = await state.addPet('nuez', 'nuez.jpg', '-26.7586707', '-65.2697487');
+	// // console.log(`Im the newPet`, newPet);
 
-	//Get My Pets
+	// //Get My Pets
 	// const myPets: object = await state.getMyPets();
 	// console.log(`Im the getmypets`, myPets);
+
+	// const report = await state.reportPet(`lucas`, 3815119091, `vi a macricio por ahi`, 4);
+	// console.log(`Im the report pet`, report);
 
 	// Update Pet
 	// const updatePet = await state.updatePet({ petId: 19, petname: 'almendra', img: 'almendra.pngj' });

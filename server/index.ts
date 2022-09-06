@@ -43,6 +43,12 @@ app.get('/env', (req, res) => {
 		environment: process.env.NODE_ENV,
 	});
 });
+
+app.get(`/users`, async (req, res) => {
+	const users = await getAllUser();
+	res.status(400).json(users);
+});
+
 //Signup
 app.post(`/auth`, async (req, res): Promise<void> => {
 	const { fullName, email, password } = req.body;
@@ -124,13 +130,16 @@ app.get(`/pets-around`, async (req, res): Promise<void> => {
 
 app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> => {
 	const { petname, img, lat, lng } = req.body;
+	console.log(img);
+
 	if (req._user.id && req.body) {
 		//Cloudinary section
-		// const image = await uploadCloudinaryImg(img);
+		const image = await uploadCloudinaryImg(img);
+		console.log(image.url);
 		//Pet Controller
-		const pet: Pet = await registerPet(petname, img, lat, lng, req._user.id);
+		const pet: Pet = await registerPet(petname, lat, lng, req._user.id);
 		//Algolia section
-		const algoliaRes: object = await registerPetAlgolia(pet);
+		const algoliaRes: object = await registerPetAlgolia(pet, image.url);
 
 		res.status(200).json({ pet, algoliaRes });
 	} else {
@@ -150,9 +159,9 @@ app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	const userId = req._user.id;
 	try {
 		//Cloudinary section
-		// const image = await uploadCloudinaryImg(img);
+		const image = await uploadCloudinaryImg(img);
 		//DB SECTION
-		const pet = await updatePet(petId, userId, lat, lng, petname, img, founded);
+		const pet = await updatePet(petId, userId, lat, lng, petname, image, founded);
 		//Algolia SECTION
 		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname);
 

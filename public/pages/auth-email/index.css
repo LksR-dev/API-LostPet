@@ -1,0 +1,9 @@
+.verify__container {
+	height: 100vh;
+	width: 100%;
+	margin-top: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+}

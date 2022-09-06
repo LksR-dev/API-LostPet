@@ -28,7 +28,7 @@ class Home extends HTMLElement {
 					pets.forEach((pet) => {
 						console.log(pet);
 						this.innerHTML += `
-								<pet-card id='${pet.objectID}' name='${pet.petName}'></pet-card>
+								<pet-card id='${pet.objectID}' name='${pet.petName}' img='${pet.img}'></pet-card>
 							`;
 					});
 				} else {

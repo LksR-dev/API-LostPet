@@ -1,3 +1,4 @@
+import { Router } from '@vaadin/router';
 import { state } from '../../state';
 
 const pencil = require(`../../assets/pencil.svg`);
@@ -17,15 +18,19 @@ class PetCard extends HTMLElement {
 
 		style.innerHTML = `
       .card__container {
-        height: 234px;
+        height: 300px;
         width: 335px;
         border: 1px solid #000;
         margin: 20px 0px;
       }
-      .card__container-top {
-        height: 147px;
+			.card__container-top {
+        height: 180px;
         widht: 100%;
       }
+			.card__img {
+				width: 100%;
+				height: 100%;
+			}
       .card__container-bot {
         display: flex;
         justify-content: space-around;
@@ -53,11 +58,25 @@ class PetCard extends HTMLElement {
 
 		const report = this.shadow.querySelector('.report');
 		const edit = this.querySelector('.edit__icon');
+		const userToken = state.getUserData().token;
 
 		report?.addEventListener('click', (e) => {
-			e.preventDefault();
+			if (userToken) {
+				Router.go('/report-pet');
+			} else {
+				state.setRedirectURL('/report-pet');
+				Router.go('/verify-email');
+			}
 		});
 
+		edit?.addEventListener('click', () => {
+			if (userToken) {
+				Router.go('/update-pet');
+			} else {
+				state.setRedirectURL('/update-pet');
+				Router.go('/verify-email');
+			}
+		});
 		this.shadow.append(style);
 	}
 	reportOrEdit() {

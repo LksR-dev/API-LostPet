@@ -20,7 +20,7 @@ const bodyToIndex = (body, id?: number) => {
 	return resp;
 };
 
-async function registerPetAlgolia(petData): Promise<object> {
+async function registerPetAlgolia(petData, img): Promise<object> {
 	const petId = petData.get('id') as any;
 	const petName = petData.get('name') as any;
 	const petLat = petData.get('last_lat') as any;
@@ -30,6 +30,7 @@ async function registerPetAlgolia(petData): Promise<object> {
 		const algoliaRes = await indexPet.saveObject({
 			objectID: petId,
 			petName,
+			img,
 			_geoloc: {
 				lat: petLat,
 				lng: petLng,

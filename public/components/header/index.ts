@@ -60,7 +60,7 @@ class Header extends HTMLElement {
 		const homeLogo = this.querySelector('.logo');
 		const myData = this.querySelector('.my__data');
 		const myReports = this.querySelector('.my__reports');
-		const report = this.querySelector('.reports');
+		const report = this.querySelector('.report');
 		const closeSession = this.querySelector('.close__session');
 
 		homeLogo?.addEventListener('click', () => {
@@ -73,7 +73,8 @@ class Header extends HTMLElement {
 			if (currentUser.token) {
 				Router.go('/my-data');
 			} else {
-				Router.go('/auth-email');
+				state.setRedirectURL('/my-data');
+				Router.go('/verify-email');
 			}
 		});
 		myReports?.addEventListener('click', () => {
@@ -81,7 +82,8 @@ class Header extends HTMLElement {
 			if (currentUser.token) {
 				Router.go('/my-reports');
 			} else {
-				Router.go('/auth-email');
+				state.setRedirectURL('/my-reports');
+				Router.go('/verify-email');
 			}
 		});
 		report?.addEventListener('click', () => {
@@ -89,14 +91,15 @@ class Header extends HTMLElement {
 			if (currentUser.token) {
 				Router.go('/report');
 			} else {
-				Router.go('/auth-email');
+				state.setRedirectURL('/report');
+				Router.go('/verify-email');
 			}
 		});
 		closeSession?.addEventListener('click', () => {
 			menuToggle?.classList.remove('active');
 			state.clearLocalStorage();
 			state.setState({ user: {} });
-			Router.go('/home');
+			Router.go('/');
 		});
 	}
 }

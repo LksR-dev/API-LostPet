@@ -4,6 +4,7 @@ export const state = {
 	data: {
 		user: {},
 		pets: [],
+		redirect: '/',
 	},
 	listeners: [],
 
@@ -21,12 +22,18 @@ export const state = {
 		localStorage.removeItem('dataUser');
 	},
 
-	getState(): void {
+	getState() {
 		return this.data;
 	},
 
 	getUserData() {
 		return this.getState().user;
+	},
+
+	setRedirectURL(url: string): void {
+		const cs = this.getState();
+		cs.redirect = url;
+		this.setState(cs);
 	},
 
 	setState(newState): void {
@@ -268,6 +275,24 @@ export const state = {
 			return data;
 		} catch {
 			throw `Error at updatePet fetch.`;
+		}
+	},
+
+	async reportPet(fullName: string, phone_number: number, data: string, petId: number) {
+		const userData = this.getUserData();
+		const token: string = userData.token;
+		try {
+			const resp = await fetch(`${API_BASE_URL}/report-pet`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `bearer ${token}`,
+				},
+				body: JSON.stringify({ fullName, phone_number, data, petId }),
+			});
+			console.log(await resp.json());
+		} catch (err) {
+			console.log(err);
 		}
 	},
 

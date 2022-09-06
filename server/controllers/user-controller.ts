@@ -39,7 +39,7 @@ async function getAllUser(): Promise<User[]> {
 		const user: User[] = await User.findAll();
 		return user;
 	} catch {
-		throw `Email doesn't exists.`;
+		throw `Problems to get users.`;
 	}
 }
 
