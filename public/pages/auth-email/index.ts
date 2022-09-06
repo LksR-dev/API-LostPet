@@ -13,6 +13,7 @@ class VerifyEmail extends HTMLElement {
 			const email = emailEl?.querySelector('.input-el').value;
 			if (email) {
 				const authEmail = await state.authEmail(email);
+				//Si el email existe, renderizamos la pagina y agregamos el input de la contraseña.
 				if (authEmail) {
 					this.render();
 					this.innerHTML = `
@@ -25,11 +26,20 @@ class VerifyEmail extends HTMLElement {
 
 					btn?.addEventListener('click', async () => {
 						const password = passwordEl?.querySelector('.input-el').value;
-						const auth = await state.getToken(password, email);
-						if (auth) {
-							Router.go(redirectURL);
+						if (password) {
+							const auth = await state.getToken(password, email);
+							if (auth === 'Email or password incorrect') {
+								alert(`La contraseña es incorrecta.`);
+							} else {
+								Router.go(redirectURL);
+							}
+						} else {
+							alert('Debe colocar una contraseña.');
 						}
+						//Validamos  que la contraseña sea la correcta
+						//De ser correcta redirige al usuario a la page que seleccionó previamente.
 					});
+					//Si el email no existe, envia al usuario a la page /my-data.
 				} else {
 					Router.go('/my-data');
 				}

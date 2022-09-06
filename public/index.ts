@@ -7,6 +7,8 @@ import './components/pet-card';
 //Pages
 import './pages/home';
 import './pages/auth-email';
+import './pages/my-data';
+
 import { initRouter } from './router';
 import { state } from './state';
 

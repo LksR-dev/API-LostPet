@@ -5,5 +5,6 @@ export function initRouter(root) {
 	router.setRoutes([
 		{ path: '/', component: 'home-page' },
 		{ path: '/verify-email', component: 'verify-email' },
+		{ path: '/my-data', component: 'my-data' },
 	]);
 }
