@@ -8,6 +8,8 @@ import './components/pet-card';
 import './pages/home';
 import './pages/auth-email';
 import './pages/my-data';
+import './pages/my-pets';
+import './pages/report-pet';
 
 import { initRouter } from './router';
 import { state } from './state';

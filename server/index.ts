@@ -34,7 +34,7 @@ app.use(express.json());
 
 app.use(
 	express.json({
-		limit: '100mb',
+		limit: '500mb',
 	}),
 );
 
@@ -149,7 +149,7 @@ app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> =
 
 app.get(`/me/pets`, authMiddleware, async (req, res): Promise<void> => {
 	const myPets = await getPets(req._user.id);
-	res.json({ myPets });
+	res.json(myPets);
 });
 
 //Update data pet

@@ -30,30 +30,7 @@ class MyData extends HTMLElement {
 				userData.email,
 				redirect,
 			);
-
 			await this.updateUser(userData.token, password, passwordConfirm, name, redirect);
-
-			// //Si las contraseñas coinciden y tenemos un token, vamos a actualizar la data.
-			// if (userData.token && password) {
-			// 	if (password === passwordRep) {
-			// 		state.updateDataUser({ fullName: name, password });
-			// 		redirect === '/my-data' ? Router.go('/') : Router.go(redirect);
-			// 	} else {
-			// 		alert('Las contraseñas no coinciden.')
-			// 	}
-			// } else if (userData.token) {
-			// 	state.updateDataUser({ fullName: name });
-			// 	redirect === '/my-data' ? Router.go('/') : Router.go(redirect);
-			// }
-
-			// //Si las contraseñas coinciden y no tenemos un token, vamos a crear el usuario.
-			// if (!userData.token && password) {
-			// 	state.createUser(name, password);
-			// 	state.getToken(password, userData.email);
-			// 	redirect === '/my-data' ? Router.go('/') : Router.go(redirect);
-			// } else {
-			// 	alert('Debes colocar una contraseña.');
-			// }
 		});
 	}
 

@@ -5,7 +5,14 @@ export const state = {
 		user: {},
 		pets: [],
 		redirect: '/',
+		reportPet: {
+			petName: null,
+			img: null,
+			lat: null,
+			lng: null,
+		},
 	},
+
 	listeners: [],
 
 	initLocalStorage() {
@@ -30,6 +37,13 @@ export const state = {
 		return this.getState().user;
 	},
 
+	getReportPet() {
+		return this.getState().reportPet;
+	},
+
+	suscribe(callback: (any) => any): void {
+		this.listeners.push(callback);
+	},
 	setRedirectURL(url: string): void {
 		const cs = this.getState();
 		cs.redirect = url;
@@ -41,10 +55,6 @@ export const state = {
 		for (const cb of this.listeners) {
 			cb();
 		}
-	},
-
-	suscribe(callback: (any) => any): void {
-		this.listeners.push(callback);
 	},
 
 	setUserDataLocalStorage() {
@@ -81,15 +91,36 @@ export const state = {
 		}
 	},
 
-	addPetState(newPet) {
+	setReportPet(data) {
 		const cs = this.getState();
-		cs.pets.push(newPet);
-		this.setState(cs);
+
+		if (data.name) {
+			console.log(data.name);
+
+			cs.reportPet.petName = data.name;
+
+			this.setState(cs);
+		}
+		if (data.lat && data.lng) {
+			cs.reportPet.lat = data.lat;
+			cs.reportPet.lng = data.lng;
+			this.setState(cs);
+		}
+		if (data.img) {
+			cs.reportPet.img = data.img;
+			this.setState(cs);
+		}
 	},
 
 	setURI(URI: string): void {
 		const cs = this.getState();
 		cs.URI = URI;
+		this.setState(cs);
+	},
+
+	addPetState(newPet) {
+		const cs = this.getState();
+		cs.pets.push(newPet);
 		this.setState(cs);
 	},
 
@@ -214,8 +245,14 @@ export const state = {
 		}
 	},
 
-	async addPet(petname: string, img: string, lat: string, lng: string): Promise<object> {
+	async addPet(): Promise<object> {
 		const userData = this.getUserData();
+		const reportPet = this.getReportPet();
+		const petname = reportPet.petName;
+		const lat = reportPet.lat;
+		const lng = reportPet.lng;
+		const img = reportPet.img;
+
 		try {
 			const resp: Response = await fetch(`${API_BASE_URL}/user/register-pet`, {
 				method: 'POST',
@@ -227,6 +264,8 @@ export const state = {
 			});
 			const pet: object = await resp.json();
 			this.addPetState(pet);
+			console.log(pet);
+
 			return pet;
 		} catch {
 			throw `Error to addPet fetch.`;

@@ -7,12 +7,16 @@ const mapboxClient = new MapboxClient(MAPBOX_TOKEN);
 
 export async function initMapMapbox(mapElement, lat, lng) {
 	mapboxgl.accessToken = MAPBOX_TOKEN;
-	return await new mapboxgl.Map({
-		container: mapElement,
-		style: 'mapbox://styles/mapbox/streets-v11',
-		center: [lng, lat],
-		zoom: 14,
-	});
+	try {
+		return await new mapboxgl.Map({
+			container: mapElement,
+			style: 'mapbox://styles/mapbox/streets-v11',
+			center: [lng, lat],
+			zoom: 14,
+		});
+	} catch (err) {
+		throw err;
+	}
 }
 
 export async function initSearchFormMapbox(mapboxInput, callback) {

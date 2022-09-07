@@ -41,7 +41,7 @@ class Header extends HTMLElement {
       <div class='menu'>
         <div class='menu__text-container'>
           <text-comp class='my__data' use='link'>Mis datos</text-comp>
-          <text-comp class='my__reports' use='link'>Mis mascotas reportadas</text-comp>
+          <text-comp class='my__pets' use='link'>Mis mascotas reportadas</text-comp>
           <text-comp class='report' use='link'>Reportar mascota</text-comp>
         </div>
 
@@ -59,7 +59,7 @@ class Header extends HTMLElement {
 		//Redirect
 		const homeLogo = this.querySelector('.logo');
 		const myData = this.querySelector('.my__data');
-		const myReports = this.querySelector('.my__reports');
+		const myPets = this.querySelector('.my__pets');
 		const report = this.querySelector('.report');
 		const closeSession = this.querySelector('.close__session');
 
@@ -77,12 +77,12 @@ class Header extends HTMLElement {
 				Router.go('/verify-email');
 			}
 		});
-		myReports?.addEventListener('click', () => {
+		myPets?.addEventListener('click', () => {
 			menuToggle?.classList.remove('active');
 			if (currentUser.token) {
-				Router.go('/my-reports');
+				Router.go('/my-pets');
 			} else {
-				state.setRedirectURL('/my-reports');
+				state.setRedirectURL('/my-pets');
 				Router.go('/verify-email');
 			}
 		});
