@@ -11,6 +11,7 @@ import './pages/my-data';
 import './pages/my-pets';
 import './pages/report-pet';
 import './pages/update-pet';
+import './pages/report-info';
 
 import { initRouter } from './router';
 import { state } from './state';

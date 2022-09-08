@@ -85,8 +85,10 @@ class PetCard extends HTMLElement {
 
 		report?.addEventListener('click', () => {
 			if (userToken) {
+				state.setReportPet({ id: petId, name: petName });
 				Router.go('/report-info');
 			} else {
+				state.setReportPet({ id: petId, name: petName });
 				state.setRedirectURL('/report-info');
 				Router.go('/verify-email');
 			}

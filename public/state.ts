@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://lost-pet-dwfm7.herokuapp.com/';
 
 export const state = {
 	data: {
@@ -284,6 +284,7 @@ export const state = {
 			});
 			const pet: object = await resp.json();
 			this.addPetState(pet);
+
 			return pet;
 		} catch {
 			throw `Error to addPet fetch.`;

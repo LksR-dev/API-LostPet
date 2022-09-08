@@ -1,0 +1,15 @@
+.report__info-container {
+	margin: 40px 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+
+.textarea {
+	width: 335px;
+	height: 127px;
+	border: 2px solid #000;
+	border-radius: 5px;
+}
