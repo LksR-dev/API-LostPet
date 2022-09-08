@@ -5,11 +5,15 @@ export const state = {
 		user: {},
 		pets: [],
 		redirect: '/',
+		editStatus: false,
 		reportPet: {
 			petName: null,
 			img: null,
 			lat: null,
 			lng: null,
+			founded: false,
+			petId: null,
+			ubication: null,
 		},
 	},
 
@@ -47,6 +51,12 @@ export const state = {
 	setRedirectURL(url: string): void {
 		const cs = this.getState();
 		cs.redirect = url;
+		this.setState(cs);
+	},
+
+	setEditStatus(status: boolean): void {
+		const cs = this.getState();
+		cs.editStatus = status;
 		this.setState(cs);
 	},
 
@@ -95,10 +105,7 @@ export const state = {
 		const cs = this.getState();
 
 		if (data.name) {
-			console.log(data.name);
-
 			cs.reportPet.petName = data.name;
-
 			this.setState(cs);
 		}
 		if (data.lat && data.lng) {
@@ -108,6 +115,18 @@ export const state = {
 		}
 		if (data.img) {
 			cs.reportPet.img = data.img;
+			this.setState(cs);
+		}
+		if (data.id) {
+			cs.reportPet.petId = data.id;
+			this.setState(cs);
+		}
+		if (data.founded) {
+			cs.reportPet.founded = data.founded;
+			this.setState(cs);
+		}
+		if (data.ubication) {
+			cs.reportPet.ubication = data.ubication;
 			this.setState(cs);
 		}
 	},
@@ -252,6 +271,7 @@ export const state = {
 		const lat = reportPet.lat;
 		const lng = reportPet.lng;
 		const img = reportPet.img;
+		const ubication = reportPet.ubication;
 
 		try {
 			const resp: Response = await fetch(`${API_BASE_URL}/user/register-pet`, {
@@ -260,12 +280,10 @@ export const state = {
 					'Content-Type': 'application/json',
 					Authorization: `bearer ${userData.token}`,
 				},
-				body: JSON.stringify({ petname, img, lat, lng }),
+				body: JSON.stringify({ petname, img, lat, lng, ubication }),
 			});
 			const pet: object = await resp.json();
 			this.addPetState(pet);
-			console.log(pet);
-
 			return pet;
 		} catch {
 			throw `Error to addPet fetch.`;
@@ -285,15 +303,33 @@ export const state = {
 		}
 	},
 
-	async updatePet(data): Promise<object> {
+	async getPetById(): Promise<object> {
+		try {
+			const userData = this.getUserData();
+			const reportPetData = this.getReportPet();
+			const petId = reportPetData.petId;
+
+			const resp: Response = await fetch(`${API_BASE_URL}/pet/${petId}`, {
+				headers: { Authorization: `bearer ${userData.token}` },
+			});
+			const pet: Object = await resp.json();
+			return pet;
+		} catch {
+			throw `Error to get myPets fetch.`;
+		}
+	},
+
+	async updatePet(): Promise<object> {
 		const userData = this.getUserData();
+		const reportPetData = this.getReportPet();
 		const token: string = userData.token;
-		const petId: number = data.petId;
-		const petname: string = data.petname;
-		const petImg: string = data.img;
-		const petLat: number = data.lat;
-		const petLng: number = data.lng;
-		const petFounded: boolean = data.founded;
+		const petId: number = reportPetData.petId;
+		const petname: string = reportPetData.petName;
+		const petImg: string = reportPetData.img;
+		const petLat: number = reportPetData.lat;
+		const petLng: number = reportPetData.lng;
+		const petFounded: boolean = reportPetData.founded;
+		const petUbicaton: string = reportPetData.ubication;
 
 		try {
 			const resp: Response = await fetch(`${API_BASE_URL}/me/pet/${petId}`, {
@@ -308,6 +344,7 @@ export const state = {
 					lat: petLat,
 					lng: petLng,
 					founded: petFounded,
+					ubication: petUbicaton,
 				}),
 			});
 			const data: object = await resp.json();
@@ -329,15 +366,18 @@ export const state = {
 				},
 				body: JSON.stringify({ fullName, phone_number, data, petId }),
 			});
-			console.log(await resp.json());
+			return await resp.json();
 		} catch (err) {
-			console.log(err);
+			throw err;
 		}
 	},
 
-	async deletePet(petId) {
+	async deletePet() {
 		const userData = this.getUserData();
 		const token: string = userData.token;
+		const reportPetData = this.getReportPet();
+		const petId: number = reportPetData.petId;
+
 		try {
 			const resp: Response = await fetch(`${API_BASE_URL}/me/pet/${petId}`, {
 				method: 'DELETE',

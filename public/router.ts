@@ -8,5 +8,6 @@ export function initRouter(root) {
 		{ path: '/my-data', component: 'my-data' },
 		{ path: '/my-pets', component: 'my-pets' },
 		{ path: '/report', component: 'report-pet' },
+		{ path: '/edit-pet', component: 'edit-pet' },
 	]);
 }

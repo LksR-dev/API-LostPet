@@ -88,6 +88,7 @@ class Header extends HTMLElement {
 		});
 		report?.addEventListener('click', () => {
 			menuToggle?.classList.remove('active');
+			state.setEditStatus(false);
 			if (currentUser.token) {
 				Router.go('/report');
 			} else {

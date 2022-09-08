@@ -5,6 +5,8 @@ async function registerPet(
 	lat: string,
 	lng: string,
 	userId: number,
+	img: string,
+	ubication: string,
 ): Promise<Pet> {
 	if (petname && lat && lng && userId) {
 		const pet: Pet = await Pet.create({
@@ -12,10 +14,21 @@ async function registerPet(
 			last_lat: lat,
 			last_lng: lng,
 			userId,
+			img,
+			ubication,
 		});
 		return pet;
 	} else {
 		throw `Error to create or find a pet`;
+	}
+}
+
+async function getPetById(id): Promise<Pet> {
+	try {
+		const pet: Pet = await Pet.findByPk(id);
+		return pet;
+	} catch {
+		throw `Error to get pet by id.`;
 	}
 }
 
@@ -27,10 +40,11 @@ async function updatePet(
 	petName: string,
 	img: string,
 	founded: boolean,
+	ubication: string,
 ): Promise<any> {
 	if (!founded) {
 		const pet = await Pet.update(
-			{ last_lat: lat, last_lng: lng, name: petName, img },
+			{ last_lat: lat, last_lng: lng, name: petName, img, ubication },
 			{
 				where: { id: petId, userId: userId },
 			},
@@ -58,4 +72,4 @@ async function deletePet(petId: number, userId: number): Promise<number> {
 	}
 }
 
-export { registerPet, updatePet, deletePet };
+export { registerPet, updatePet, deletePet, getPetById };

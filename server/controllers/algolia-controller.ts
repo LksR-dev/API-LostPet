@@ -7,6 +7,9 @@ const bodyToIndex = (body, id?: number) => {
 		resp.objectID = id;
 	}
 
+	if (body.img) {
+		resp.img = body.img;
+	}
 	if (body.petName) {
 		resp.petName = body.petName;
 	}
@@ -20,7 +23,7 @@ const bodyToIndex = (body, id?: number) => {
 	return resp;
 };
 
-async function registerPetAlgolia(petData, img): Promise<object> {
+async function registerPetAlgolia(petData, img: string, ubication: string): Promise<object> {
 	const petId = petData.get('id') as any;
 	const petName = petData.get('name') as any;
 	const petLat = petData.get('last_lat') as any;
@@ -31,6 +34,7 @@ async function registerPetAlgolia(petData, img): Promise<object> {
 			objectID: petId,
 			petName,
 			img,
+			ubication,
 			_geoloc: {
 				lat: petLat,
 				lng: petLng,
@@ -59,13 +63,15 @@ async function updatePetAlgolia(
 	lat: number,
 	lng: number,
 	petName: string,
+	ubication: string,
+	img: string,
 ): Promise<any> {
 	try {
-		const indexItemPet = bodyToIndex({ lat, lng, petName }, id);
+		const indexItemPet = bodyToIndex({ lat, lng, petName, ubication, img }, id);
 		const pet = await indexPet.partialUpdateObject(indexItemPet);
 		return pet;
 	} catch {
-		return `problems to updatepet algolia`;
+		throw `problems to updatepet algolia`;
 	}
 }
 

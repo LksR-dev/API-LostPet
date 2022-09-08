@@ -49,7 +49,7 @@ class TextComp extends HTMLElement {
         }
       `;
 		}
-		if (use === 'report') {
+		if (use === 'report' || use === 'unpublish') {
 			style.innerHTML = `
         .text {
           font-size: 16px;

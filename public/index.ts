@@ -10,6 +10,7 @@ import './pages/auth-email';
 import './pages/my-data';
 import './pages/my-pets';
 import './pages/report-pet';
+import './pages/update-pet';
 
 import { initRouter } from './router';
 import { state } from './state';

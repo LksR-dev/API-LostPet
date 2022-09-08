@@ -3,60 +3,85 @@ import { Router } from '@vaadin/router';
 import { initMapMapbox, initSearchFormMapbox } from '../../lib/mapbox';
 import { dropzoneUpload } from '../../lib/dropzone';
 import * as mapboxgl from 'mapbox-gl';
-let defaultReportImg = require('../../assets/default-report.svg');
 
-class ReportPet extends HTMLElement {
+class EditPet extends HTMLElement {
+	petName: string;
+	petId: number;
+	img: string;
+	ubication: string;
+	lat;
+	lng;
+	founded: boolean;
 	connectedCallback(): void {
-		this.render();
+		state.getPetById().then((res) => {
+			const pet = res as any;
+			this.petName = pet.name;
+			this.petId = pet.petId;
+			this.img = pet.img;
+			this.ubication = pet.ubication;
+			this.lat = pet.last_lat;
+			this.lng = pet.last_lng;
+			this.founded = pet.founded;
+
+			state.setReportPet({
+				name: this.petName,
+				lat: this.lat,
+				lng: this.lng,
+				img: this.img,
+				id: this.petId,
+				founded: this.founded,
+				ubication: this.ubication,
+			});
+
+			this.render();
+		});
 	}
 	addListeners() {
 		//State section
 		const cs = state.getState();
-		const redirect = cs.redirect;
 		const reportPet = state.getReportPet();
-		const userData = state.getUserData();
-		const userLng = userData.lng;
-		const userLat = userData.lat;
+		const redirect = cs.redirect;
+		const last_lat = this.lat;
+		const last_lng = this.lng;
 
 		//Element section
 		const petNameEl = this.querySelector('.petName') as any;
 		const dropzoneImg: any = this.querySelector('.dropzone__img');
 		const dropzoneBtn: any = this.querySelector('.dropzone__btn');
 		const mapboxContainer = this.querySelector('.mapbox__map-container');
-		const mapboxUbicationEl = this.querySelector('.mapbox__input-ubication') as any;
-		const btnSaveEl = this.querySelector('.btn__save-data');
-		const btnCancelEl = this.querySelector('.btn__cancel');
+		const updateBtnEl = this.querySelector('.btn__update');
+		const foundedBtnEl = this.querySelector('.btn__founded');
+		const unpublishEl = this.querySelector('.unpublish');
 
 		this.dropzone(dropzoneImg, dropzoneBtn);
-		this.mapbox(userLat, userLng, mapboxContainer);
+		this.mapbox(mapboxContainer, last_lat, last_lng);
 
 		//EventListener section
-		btnSaveEl?.addEventListener('click', () => {
-			const mapboxUbication = mapboxUbicationEl?.querySelector('.input-el').value;
+		updateBtnEl?.addEventListener('click', () => {
 			const petName = petNameEl?.querySelector('.input-el').value;
 			if (petName) {
-				state.setReportPet({ name: petName, ubication: mapboxUbication });
+				state.setReportPet({ name: petName });
 			}
-			if (
-				reportPet.petName &&
-				reportPet.img &&
-				reportPet.lat &&
-				reportPet.lng &&
-				reportPet.ubication
-			) {
-				state.addPet().then((resp) => {
-					if (resp) {
-						alert('Tu mascota ha sido reportada correctamente.');
-						redirect != '/' ? Router.go(redirect) : Router.go('/my-pets');
-					}
-				});
-			} else {
-				alert('Debe completar todos los campos.');
-			}
+			state.updatePet().then((res) => {
+				alert('Tu mascota ha sido actualizada correctamente.');
+				redirect != '/' ? Router.go(redirect) : Router.go('/my-pets');
+			});
 		});
 
-		btnCancelEl?.addEventListener('click', () => {
-			Router.go('/');
+		foundedBtnEl?.addEventListener('click', () => {
+			state.setReportPet({ founded: true });
+			state.updatePet().then(() => {
+				state.deletePet();
+				alert('La mascota se ha repotado como encontrada, se despublicará.');
+				Router.go('/my-pets');
+			});
+		});
+
+		unpublishEl?.addEventListener('click', () => {
+			state.deletePet().then((res) => {
+				alert('La mascota se despublicará.');
+				Router.go('/my-pets');
+			});
 		});
 	}
 
@@ -73,22 +98,13 @@ class ReportPet extends HTMLElement {
 		});
 	}
 
-	mapbox(userLat, userLng, mapboxContainer) {
+	mapbox(mapboxContainer, last_lat, last_lng) {
 		const mapboxInputEl = this.querySelector('.mapbox__input-ubication') as any;
 		const mapboxBtnEl = this.querySelector('.mapbox__btn-ubication');
 
-		// Ubicacion por defecto: Buenos Aires, Argentina.
-		let defaultLat = -34.6037388;
-		let defaultLng = -58.3857976;
-		let currentLat, currentLng;
-
-		if (userLat && userLng) {
-			currentLat = userLat;
-			currentLng = userLng;
-		} else {
-			currentLat = defaultLat;
-			currentLng = defaultLng;
-		}
+		// Ubicación con la que se reportó la mascota
+		let currentLat = last_lat;
+		let currentLng = last_lng;
 
 		initMapMapbox(mapboxContainer, currentLat, currentLng).then((map) => {
 			const markerMap = new mapboxgl.Marker({ draggable: true });
@@ -98,6 +114,7 @@ class ReportPet extends HTMLElement {
 
 			mapboxBtnEl?.addEventListener('click', () => {
 				const ubicationInput = mapboxInputEl.querySelector('.input-el').value;
+				state.setReportPet({ ubication: ubicationInput });
 
 				if (!ubicationInput) {
 					alert('Ingrese una ubicación válida.');
@@ -123,25 +140,27 @@ class ReportPet extends HTMLElement {
 	render(): void {
 		this.classList.add('report__container');
 		this.innerHTML = `
-			<text-comp use='title'>Reportar mascota perdida</text-comp>
-      <input-comp class='petName' value='' name='nombre' type='text' placeholder='salchipapa' labelText='Nombre'></input-comp>
+			<text-comp use='title'>Editar mascota perdida</text-comp>
+      <input-comp class='petName' value='${this.petName}' name='nombre' type='text' placeholder='salchipapa' labelText='Nombre'></input-comp>
       
       <div class='dropzone__img-container'>
-        <img class='dropzone__img' src='${defaultReportImg}' crossorigin='anonymous'>
+        <img class='dropzone__img' src='${this.img}' crossorigin='anonymous'>
       </div>
       <button-comp class='dropzone__btn' background='green'>agregar/modificar foto</button-comp>
       
       <div class='mapbox__map-container'></div>
-      <input-comp class='mapbox__input-ubication' name='ubication' type='text' placeholder='Obelisco' labelText='Ubicacion'></input-comp>
+      <input-comp class='mapbox__input-ubication' value='${this.ubication}' name='ubication' type='text' placeholder='Obelisco' labelText='Ubicacion'></input-comp>
       <button-comp class='mapbox__btn-ubication' background='pink'>Buscar</button-comp>
       
 			<text-comp class='help__mapbox-text' use='paragraph'>Buscá un punto de referencia para reportar a tu mascota. Puede ser una dirección, un barrio o una ciudad. Luego, de ser necesario, arrastra el marker para mayor exactitud.</text-comp>
+      
+			<button-comp class='btn__update' background='pink'>Guardar</button-comp>
+      <button-comp	button-comp class='btn__founded' background='green'>Reportar como encontrado</button-comp>
 
-			<button-comp class='btn__save-data' background='pink'>Reportar como perdido</button-comp>
-      <button-comp	button-comp class='btn__cancel' background='gray'>Cancelar</button-comp>
+			<text-comp class='unpublish' use='unpublish'>Despublicar</text-comp>
       `;
 
 		this.addListeners();
 	}
 }
-customElements.define('report-pet', ReportPet);
+customElements.define('edit-pet', EditPet);

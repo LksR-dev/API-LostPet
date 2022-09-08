@@ -12,7 +12,7 @@ import {
 	updateUser,
 	getEmail,
 } from './controllers/user-controller';
-import { registerPet, updatePet, deletePet } from './controllers/pet-controller';
+import { registerPet, getPetById, updatePet, deletePet } from './controllers/pet-controller';
 import { authUser, getToken, updateUserPassword } from './controllers/auth-controller';
 import { uploadCloudinaryImg } from './controllers/cloudinary-controller';
 import {
@@ -32,11 +32,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(
-	express.json({
-		limit: '500mb',
-	}),
-);
+app.use(express.json({ limit: '50mb' }));
 
 app.get('/env', (req, res) => {
 	res.json({
@@ -129,17 +125,15 @@ app.get(`/pets-around`, async (req, res): Promise<void> => {
 });
 
 app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> => {
-	const { petname, img, lat, lng } = req.body;
-	console.log(img);
+	const { petname, img, lat, lng, ubication } = req.body;
 
 	if (req._user.id && req.body) {
 		//Cloudinary section
 		const image = await uploadCloudinaryImg(img);
-		console.log(image.url);
 		//Pet Controller
-		const pet: Pet = await registerPet(petname, lat, lng, req._user.id);
+		const pet: Pet = await registerPet(petname, lat, lng, req._user.id, image.url, ubication);
 		//Algolia section
-		const algoliaRes: object = await registerPetAlgolia(pet, image.url);
+		const algoliaRes: object = await registerPetAlgolia(pet, image.url, ubication);
 
 		res.status(200).json({ pet, algoliaRes });
 	} else {
@@ -152,18 +146,27 @@ app.get(`/me/pets`, authMiddleware, async (req, res): Promise<void> => {
 	res.json(myPets);
 });
 
+app.get(`/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
+	try {
+		const myPets = await getPetById(req.params.id);
+		res.status(200).json(myPets);
+	} catch {
+		throw res.status(400).json({ message: `The petId is not correct. (getPetById)` });
+	}
+});
+
 //Update data pet
 app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
-	const { petname, lat, lng, img, founded } = req.body;
+	const { petname, lat, lng, img, founded, ubication } = req.body;
 	const petId = req.params['id'];
 	const userId = req._user.id;
 	try {
 		//Cloudinary section
 		const image = await uploadCloudinaryImg(img);
 		//DB SECTION
-		const pet = await updatePet(petId, userId, lat, lng, petname, image, founded);
+		const pet = await updatePet(petId, userId, lat, lng, petname, image.url, founded, ubication);
 		//Algolia SECTION
-		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname);
+		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname, ubication, image.url);
 
 		res.status(200).json({
 			messageDB: `Total update pets: ${pet}`,
@@ -181,7 +184,6 @@ app.delete(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 	try {
 		const petDeleted = await deletePet(petId, userId);
 		await deletePetAlgolia(petId);
-
 		res.status(200).json({
 			message: `The pet has been deleted correctly: ${petDeleted}`,
 			messageAlgolia: `The pet has been deleted correctly`,

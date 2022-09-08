@@ -12,6 +12,12 @@ Pet.init(
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,
 		},
+		img: {
+			type: DataTypes.STRING,
+		},
+		ubication: {
+			type: DataTypes.STRING,
+		},
 		last_lng: {
 			type: DataTypes.FLOAT,
 		},

@@ -14,6 +14,9 @@ class PetCard extends HTMLElement {
 		const petId = this.getAttribute('id');
 		const img = this.getAttribute('img');
 		const petName = this.getAttribute('name');
+		const lat = this.getAttribute('lat');
+		const lng = this.getAttribute('lng');
+		const ubication = this.getAttribute('ubication');
 		const style = document.createElement('style');
 
 		style.innerHTML = `
@@ -36,44 +39,55 @@ class PetCard extends HTMLElement {
         justify-content: space-around;
         align-items: center;
         height: 87px;
+				gap: 50px;
       }
-      .petname {
-        widht: 50%;
-      }
+			.edit__icon {
+				cursor: pointer;
+			}
+			.text__ubication {
+				margin-top: 10px;
+			}
     `;
 
 		this.shadow.innerHTML = `
-      <div class='card__container' id='${petId}'>
+      <div class='card__container' petId='${petId}'>
 
         <div class='card__container-top'>
           <img class='card__img' src='${img}'>
         </div>
 
         <div class='card__container-bot'>
-          <text-comp use='title' class='petname'>${petName?.toUpperCase()}</text-comp>
+					<div class='text__container'>	
+          	<text-comp use='title' class='petname'>${petName?.toUpperCase()}</text-comp>
+						<div class='text__ubication'>
+          		<text-comp use='paragraph' class='petname'>Ubicación: ${ubication?.toUpperCase()}</text-comp>
+						</div>
+					</div>
           ${this.reportOrEdit()}
         </div>
       </div>
     `;
-
+		const edit = this.shadow.querySelector('.edit__icon');
 		const report = this.shadow.querySelector('.report');
-		const edit = this.querySelector('.edit__icon');
 		const userToken = state.getUserData().token;
 
-		report?.addEventListener('click', (e) => {
+		edit?.addEventListener('click', () => {
 			if (userToken) {
-				Router.go('/report-pet');
+				state.setEditStatus(true);
+				state.setReportPet({ id: petId });
+				Router.go('/edit-pet');
 			} else {
-				state.setRedirectURL('/report-pet');
+				state.setRedirectURL('/report');
+				state.setEditStatus(true);
 				Router.go('/verify-email');
 			}
 		});
 
-		edit?.addEventListener('click', () => {
+		report?.addEventListener('click', () => {
 			if (userToken) {
-				Router.go('/update-pet');
+				Router.go('/report-info');
 			} else {
-				state.setRedirectURL('/update-pet');
+				state.setRedirectURL('/report-info');
 				Router.go('/verify-email');
 			}
 		});
@@ -87,9 +101,9 @@ class PetCard extends HTMLElement {
       `);
 		}
 		if (path === '/my-pets') {
-			this.innerHTML = `
+			return (this.innerHTML = `
         <img class='edit__icon' src='${pencil}' alt='Edit'>
-      `;
+      `);
 		}
 	}
 }

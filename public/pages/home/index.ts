@@ -26,9 +26,8 @@ class Home extends HTMLElement {
 			state.getPetsAroundTo(currentUser.lat, currentUser.lng).then((pets) => {
 				if (pets.length > 0) {
 					pets.forEach((pet) => {
-						console.log(pet);
 						this.innerHTML += `
-								<pet-card id='${pet.objectID}' name='${pet.petName}' img='${pet.img}'></pet-card>
+								<pet-card id='${pet.objectID}' ubication='${pet.ubication}' name='${pet.petName}' img='${pet.img}'></pet-card>
 							`;
 					});
 				} else {

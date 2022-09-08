@@ -12,15 +12,10 @@ class MyPets extends HTMLElement {
 
 		const currentUser = state.getUserData();
 		state.getMyPets().then((pets) => {
-			console.log(pets);
-
 			if (pets.length > 0) {
 				pets.forEach((pet) => {
-					console.log(pet);
-
-					console.log(pet);
 					this.innerHTML += `
-						<pet-card id='${pet.id}' name='${pet.name}' img='${pet.img}'></pet-card>
+						<pet-card id='${pet.id}' ubication='${pet.ubication}' lat='${pet.last_lat}' lng='${pet.last_lng}' name='${pet.name}' img='${pet.img}'></pet-card>
 					`;
 				});
 			} else {
