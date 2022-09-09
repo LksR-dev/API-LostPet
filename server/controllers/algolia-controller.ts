@@ -30,19 +30,21 @@ async function registerPetAlgolia(petData, img: string, ubication: string): Prom
 	const petLng = petData.get('last_lng') as any;
 
 	if (petId && petName && petLat && petLng) {
-		const algoliaRes = await indexPet.saveObject({
-			objectID: petId,
-			petName,
-			img,
-			ubication,
-			_geoloc: {
-				lat: petLat,
-				lng: petLng,
-			},
-		});
-		return algoliaRes;
-	} else {
-		throw `Error to saveObject in algolia`;
+		try {
+			const algoliaRes = await indexPet.saveObject({
+				objectID: petId,
+				petName,
+				img,
+				ubication,
+				_geoloc: {
+					lat: petLat,
+					lng: petLng,
+				},
+			});
+			return algoliaRes;
+		} catch (err) {
+			console.log(`soy el catch de registerPetAlgolia `, err);
+		}
 	}
 }
 
@@ -53,8 +55,8 @@ async function searchPets(lat: string, lng: string): Promise<object> {
 			aroundRadius: 1000,
 		});
 		return hits;
-	} catch {
-		throw `Problems with search pets`;
+	} catch (err) {
+		console.log(`soy el catch de searchPets in algolia`, err);
 	}
 }
 
@@ -70,8 +72,8 @@ async function updatePetAlgolia(
 		const indexItemPet = bodyToIndex({ lat, lng, petName, ubication, img }, id);
 		const pet = await indexPet.partialUpdateObject(indexItemPet);
 		return pet;
-	} catch {
-		throw `problems to updatepet algolia`;
+	} catch (err) {
+		console.log(`soy el catch de updatePetAlgolia`, err);
 	}
 }
 
@@ -79,8 +81,8 @@ async function deletePetAlgolia(petId: any) {
 	try {
 		const deletePet = await indexPet.deleteObject(petId);
 		return `Pet has been deleted, petId in algolia: ${deletePet}`;
-	} catch {
-		throw `Error at delete pet`;
+	} catch (err) {
+		console.log(`soy el catch de deletePetAlgolia`, err);
 	}
 }
 

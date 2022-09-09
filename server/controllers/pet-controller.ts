@@ -9,17 +9,19 @@ async function registerPet(
 	ubication: string,
 ): Promise<Pet> {
 	if (petname && lat && lng && userId) {
-		const pet: Pet = await Pet.create({
-			name: petname,
-			last_lat: lat,
-			last_lng: lng,
-			userId,
-			img,
-			ubication,
-		});
-		return pet;
-	} else {
-		throw `Error to create or find a pet`;
+		try {
+			const pet: Pet = await Pet.create({
+				name: petname,
+				last_lat: lat,
+				last_lng: lng,
+				userId,
+				img,
+				ubication,
+			});
+			return pet;
+		} catch (err) {
+			console.log(`soy el catch de registerPet`, err);
+		}
 	}
 }
 
@@ -27,8 +29,8 @@ async function getPetById(id): Promise<Pet> {
 	try {
 		const pet: Pet = await Pet.findByPk(id);
 		return pet;
-	} catch {
-		throw `Error to get pet by id.`;
+	} catch (err) {
+		console.log(`soy el catch de getPetById`, err);
 	}
 }
 
@@ -42,33 +44,37 @@ async function updatePet(
 	founded: boolean,
 	ubication: string,
 ): Promise<any> {
-	if (!founded) {
-		const pet = await Pet.update(
-			{ last_lat: lat, last_lng: lng, name: petName, img, ubication },
-			{
-				where: { id: petId, userId: userId },
-			},
-		);
-		return pet;
-	} else if (founded) {
-		await Pet.update(
-			{ founded },
-			{
-				where: { id: petId, userId: userId },
-			},
-		);
-		return `The pet state has been updated correctly`;
-	} else {
-		throw `Error to update pet on pet controller.`;
+	try {
+		if (!founded) {
+			const pet = await Pet.update(
+				{ last_lat: lat, last_lng: lng, name: petName, img, ubication },
+				{
+					where: { id: petId, userId: userId },
+				},
+			);
+			return pet;
+		} else if (founded) {
+			await Pet.update(
+				{ founded },
+				{
+					where: { id: petId, userId: userId },
+				},
+			);
+			return `The pet state has been updated correctly`;
+		}
+	} catch (err) {
+		console.log(`soy el catch de updatePet`, err);
 	}
 }
 
 async function deletePet(petId: number, userId: number): Promise<number> {
 	if (petId && userId) {
-		const pet: number = await Pet.destroy({ where: { id: petId, userId } });
-		return pet;
-	} else {
-		throw `petId or userId incorrect`;
+		try {
+			const pet: number = await Pet.destroy({ where: { id: petId, userId } });
+			return pet;
+		} catch (err) {
+			console.log(`soy el catch de deletePet`, err);
+		}
 	}
 }
 
