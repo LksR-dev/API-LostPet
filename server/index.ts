@@ -2,6 +2,7 @@
 import * as express from 'express';
 import * as path from 'path';
 import * as cors from 'cors';
+import 'dotenv/config';
 
 //Controllers
 import {
@@ -127,18 +128,13 @@ app.get(`/pets-around`, async (req, res): Promise<void> => {
 app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> => {
 	const { petname, img, lat, lng, ubication } = req.body;
 
-	console.log(petname, img, lat, lng, ubication);
-
 	if (req._user.id && req.body) {
 		//Cloudinary section
 		const image = await uploadCloudinaryImg(img);
-		console.log(image);
 		//Pet Controller
 		const pet: Pet = await registerPet(petname, lat, lng, req._user.id, image.url, ubication);
-		console.log(pet);
 		//Algolia section
 		const algoliaRes: object = await registerPetAlgolia(pet, image.url, ubication);
-		console.log(algoliaRes);
 
 		res.status(200).json({ pet, algoliaRes });
 	} else {
