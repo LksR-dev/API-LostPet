@@ -77,8 +77,9 @@ class PetCard extends HTMLElement {
 				state.setReportPet({ id: petId });
 				Router.go('/edit-pet');
 			} else {
-				state.setRedirectURL('/report');
 				state.setEditStatus(true);
+				state.setReportPet({ id: petId });
+				state.setRedirectURL('/report');
 				Router.go('/verify-email');
 			}
 		});

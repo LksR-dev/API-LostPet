@@ -1,5 +1,6 @@
 const API_BASE_URL = 'https://lost-pet-dwfm7.herokuapp.com';
-
+//http://localhost:3000
+//https://lost-pet-dwfm7.herokuapp.com
 export const state = {
 	data: {
 		user: {},
