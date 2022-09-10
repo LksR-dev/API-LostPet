@@ -63,8 +63,14 @@ class EditPet extends HTMLElement {
 				state.setReportPet({ name: petName });
 			}
 			state.updatePet().then((res) => {
-				alert('Tu mascota ha sido actualizada correctamente.');
-				redirect != '/' ? Router.go(redirect) : Router.go('/my-pets');
+				if (res) {
+					alert('Tu mascota ha sido actualizada correctamente.');
+					redirect !== '/' ? Router.go(redirect) : Router.go('/my-pets');
+				} else {
+					alert(
+						'Hubo en problema en actualizar la mascota, es posible que la imagen sea demasiado grande.',
+					);
+				}
 			});
 		});
 

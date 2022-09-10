@@ -32,7 +32,7 @@ class Home extends HTMLElement {
 					});
 				} else {
 					this.innerHTML = `
-							<text-comp use='paragraph'>No hay mascotas perdidas cerca tuyo.</text-comp>
+							<text-comp use='paragraph'>No hay mascotas perdidas cerca tuyo</text-comp>
 
 						`;
 				}

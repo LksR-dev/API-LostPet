@@ -26,6 +26,7 @@ class ReportInfo extends HTMLElement {
 				state.reportPet(userName, phoneNumber, dataReport, this.petId).then((res) => {
 					if (res) {
 						alert('Se ha enviado la información con éxito. Pronto se comunicarán contigo.');
+						Router.go('/');
 					} else {
 						alert('Problemas al enviar información, reintente mas tarde.');
 					}

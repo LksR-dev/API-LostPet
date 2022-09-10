@@ -47,7 +47,11 @@ class ReportPet extends HTMLElement {
 				state.addPet().then((resp) => {
 					if (resp) {
 						alert('Tu mascota ha sido reportada correctamente.');
-						redirect != '/' ? Router.go(redirect) : Router.go('/my-pets');
+						redirect !== '/' ? Router.go(redirect) : Router.go('/my-pets');
+					} else {
+						alert(
+							'Hubo un problema para reportar la mascota, es posible que la imagen sea demasiado grande.',
+						);
 					}
 				});
 			} else {
