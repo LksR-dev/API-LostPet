@@ -133,9 +133,9 @@ app.post(`/user/register-pet`, authMiddleware, async (req, res): Promise<void> =
 		//Cloudinary section
 		const image = await uploadCloudinaryImg(img);
 		//Pet Controller
-		const pet: Pet = await registerPet(petname, lat, lng, req._user.id, image.url, ubication);
+		const pet: Pet = await registerPet(petname, lat, lng, req._user.id, image, ubication);
 		//Algolia section
-		const algoliaRes: object = await registerPetAlgolia(pet, image.url, ubication);
+		const algoliaRes: object = await registerPetAlgolia(pet, image, ubication);
 
 		res.status(200).json({ pet, algoliaRes });
 	} else {
@@ -166,9 +166,9 @@ app.patch(`/me/pet/:id`, authMiddleware, async (req, res): Promise<void> => {
 		//Cloudinary section
 		const image = await uploadCloudinaryImg(img);
 		//DB SECTION
-		const pet = await updatePet(petId, userId, lat, lng, petname, image.url, founded, ubication);
+		const pet = await updatePet(petId, userId, lat, lng, petname, image, founded, ubication);
 		//Algolia SECTION
-		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname, ubication, image.url);
+		const algoliaPet = await updatePetAlgolia(petId, lat, lng, petname, ubication, image);
 
 		res.status(200).json({
 			messageDB: `Total update pets: ${pet}`,
