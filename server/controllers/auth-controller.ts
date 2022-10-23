@@ -7,14 +7,8 @@ function getSHA256ofString(text: string) {
 }
 const SECRET = process.env.JWT_SECRET;
 
-async function authUser(email: string, password: string, userId: number): Promise<Auth> {
-	if (!email) {
-		throw `I need a user Email`;
-	} else if (!password) {
-		throw `I need a user Password`;
-	} else if (!userId) {
-		throw `I need userId`;
-	} else {
+async function authUser(email: string, password: string, userId: number): Promise<any> {
+	try {
 		const [auth, authCreated] = await Auth.findOrCreate({
 			where: { email: email },
 			defaults: {
@@ -24,15 +18,13 @@ async function authUser(email: string, password: string, userId: number): Promis
 			},
 		});
 		return auth;
+	} catch (err) {
+		return `Error to auth user. Error: ${err}`;
 	}
 }
 
 async function getToken(email: string, password: string): Promise<string> {
-	if (!email) {
-		throw `I need a user Email`;
-	} else if (!password) {
-		throw `I need a user Password`;
-	} else {
+	try {
 		const auth: Auth = await Auth.findOne({
 			where: {
 				email: email,
@@ -40,22 +32,20 @@ async function getToken(email: string, password: string): Promise<string> {
 			},
 		});
 
-		if (auth) {
-			const token: string = jwt.sign({ id: auth.get('userId') }, SECRET);
-			return token;
-		} else {
-			return `Email or password incorrect`;
-		}
+		const token: string = jwt.sign({ id: auth.get('userId') }, SECRET);
+		return token;
+	} catch (err) {
+		return `Error to getToken. Error: ${err}`;
 	}
 }
 
-async function updateUserPassword(userId: number, password: string) {
+async function updateUserPassword(userId: number, password: string): Promise<string> {
 	try {
 		const passHash = getSHA256ofString(password);
 		await Auth.update({ password: passHash }, { where: { userId: userId } });
 		return `User password has been updated`;
 	} catch {
-		throw `Error to update user password`;
+		return `Error to update user password`;
 	}
 }
 

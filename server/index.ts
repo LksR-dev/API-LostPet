@@ -33,8 +33,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 app.get('/env', (req, res) => {
 	res.json({
@@ -55,6 +55,8 @@ app.post(`/auth`, async (req, res): Promise<void> => {
 		const userData: User = await createUser(fullName, email);
 		const userId: number = userData.get('id') as any;
 		const authCreated: Auth = await authUser(email, password, userId);
+
+		console.log(authCreated);
 
 		res.status(200).json(authCreated);
 	} catch (err) {
