@@ -52,7 +52,7 @@ async function searchPets(lat: string, lng: string): Promise<object> {
 	try {
 		const { hits } = await indexPet.search('', {
 			aroundLatLng: [lat, lng].join(','),
-			aroundRadius: 1000,
+			aroundRadius: 100000,
 		});
 		return hits;
 	} catch (err) {
